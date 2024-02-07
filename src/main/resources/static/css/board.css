@@ -1,0 +1,69 @@
+#board-top {
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    #search-area {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        > form {
+            > select {
+                height: 24px;
+            }
+            > input:nth-child(2) {
+                width: 200px;
+                height: 24px;
+            }
+            > input:last-child {
+                padding: 0 10px;
+                height: 24px;
+                font-size: 12px;
+            }
+        } 
+    }
+    > button {
+        width: 70px;
+        height: 24px;
+    }
+}
+#board {
+    width: 100%;
+    border-collapse: collapse;
+    th, td {
+        text-align: center;
+        border: 1px solid #DDD;
+        height: 28px;
+        overflow: hidden;
+    }
+    th {
+        background-color: #B8D8D8;
+    }
+    th:first-child {
+        width: 7%;
+    }
+    th:nth-child(2) {
+        width: auto;
+    }
+    th:nth-child(3),
+    th:nth-child(4) {
+        width: 12%;
+    }
+    th:nth-child(5) ,
+    th:nth-child(6) {
+        width: 7%;
+    }
+}
+#page-area {
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+    gap: 5px;
+}
+.file-attach {
+    margin-left: 3px;
+}
+.reply-cnt {
+    margin-left: 7px;
+    color: #FE5F55;
+}

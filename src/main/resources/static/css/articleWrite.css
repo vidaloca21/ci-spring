@@ -1,0 +1,53 @@
+#article-write {
+    padding: 20px;
+    border: 1px solid #7A9E9F;
+    border: 1px solid #7A9E9F;
+    > button {
+        margin-top: 10px;
+        width: 100%;
+        height: 40px;
+        font-size: 15px;
+    }
+}
+/* 회원가입 구현 시 주석 적용 */
+#upper-article-title {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #b8d8d88A;
+    > span {
+        margin-left: 7px;
+    }
+}
+/* #article-writer 삭제 */
+#article-writer {
+    width: 30%;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 14px;
+}
+#article-title{
+    /* margin-top: 20px; */
+    margin-top: 15px;
+    padding: 12px;
+    font-size: 16px;
+}
+#article-content {
+    margin-top: 15px;
+    padding: 12px;
+    min-height: 300px;
+}
+#article-flie {
+    margin-top: 15px;
+}
+#article-submit {
+    margin-top: 20px;
+    height: 40px;
+    font-size: 15px;
+}
+.flie-list {
+    margin-top: 15px;
+    padding-left: 10px;
+    gap: 7px;
+}

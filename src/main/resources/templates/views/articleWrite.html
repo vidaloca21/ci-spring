@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/articleWrite.css">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./articleWrite.js"></script> -->
+</head>
+<body>
+    <div class="navbar-wrapper flex-row">
+        <div class="navbar-title flex-row">
+            <span>게시판</span>
+            <div class="navbar-category flex-row">
+                <a href="" class="activated">게시판A</a>
+                <a href="">게시판B</a>
+                <a href="">게시판C</a>
+            </div>
+             <!-- <ul class="flex-row">
+                <li>로그인</li>
+                <li>회원가입</li>
+            </ul>
+            <ul class="flex-row">
+                <li>닉네임</li>
+                <li>로그아웃</li>
+            </ul> -->
+        </div>
+    </div>
+    <div id="container">
+        <div id="article-write">
+            <h3>게시글 작성</h3>
+            <p id="upper-article-title">상위 게시글:<span>제목입니다</span></p>
+            <form action="" class="flex-col" enctype="multipart/form-data">
+                <input type="text" id="article-writer" placeholder="작성자 닉네임">
+                <input type="text" id="article-title" placeholder="제목을 입력하세요">
+                <textarea id="article-content" name="" placeholder="본문 내용을 입력하세요"></textarea>
+                <input type="file" multiple name="attachFiles[]" id="article-flie">
+                <input type="submit" id="article-submit" class="btn-green" value="등록">
+            </form>
+            <button type="button" class="btn-white">목록으로 돌아가기</button>
+        </div>
+    </div>
+</body>
+</html>
