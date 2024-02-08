@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +15,9 @@
         <div class="navbar-title flex-row">
             <span>게시판</span>
             <div class="navbar-category flex-row">
-                <a href="" class="activated">게시판A</a>
-                <a href="">게시판B</a>
-                <a href="">게시판C</a>
+                <a href="/board" class="activated">자유게시판</a>
+                <a href="/notice">공지사항</a>
+                <a href="/shop">Shop</a>
             </div>
             <!-- <ul class="flex-row">
                 <li>로그인</li>
@@ -33,23 +33,22 @@
         <div id="article-wrapper">
             <div id="article">
                 <div id="article-title">
-                    <h3>제목입니다</h3>
+                    <h3 th:text="${articleVO.articleTitle}">제목입니다</h3>
                     <div class="flex-row">
                         <ul class="flex-row writer-info">
-                            <li><span class="user-nickname">닉네임</span></li>
-                            <li>작성:<span>2024-02-01 18:02</span></li>
-                            <li>수정:<span>2024-02-01 19:10</span></li>
-                            <li>조회수<span>10</span></li>
+                            <li><span class="user-nickname" th:text="${articleVO.memberName}">닉네임</span></li>
+                            <li>작성:<span th:text="${articleVO.articleCreateDate}"></span></li>
+                            <li>수정:<span th:text="${articleVO.articleModifyDate}"></span></li>
+                            <li>조회수<span th:text="${articleVO.viewCnt}"></span></li>
                         </ul>
                         <ul class="flex-row add-delete">
-                            <li>수정</li>
-                            <li>삭제</li>
+                            <li><a th:href="@{|/board/modify/${articleVO.articleId}|}">수정</a></li>
+                            <li><a th:href="@{|/board/delete/${articleVO.articleId}|}">삭제</a></li>
                         </ul>
                     </div>
                 </div>
                 <div id="article-content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Varius morbi enim nunc faucibus a pellentesque sit. Viverra orci sagittis eu volutpat odio facilisis mauris. Malesuada pellentesque elit eget gravida. Nunc sed id semper risus in hendrerit gravida. Elementum nibh tellus molestie nunc non blandit massa. Adipiscing at in tellus integer feugiat scelerisque. Nulla porttitor massa id neque aliquam vestibulum morbi. Varius morbi enim nunc faucibus. Aliquam eleifend mi in nulla posuere. Faucibus turpis in eu mi bibendum neque egestas congue. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi cras. Risus feugiat in ante metus dictum at tempor commodo. At quis risus sed vulputate odio ut enim blandit. Placerat in egestas erat imperdiet sed euismod. Ut lectus arcu bibendum at varius vel pharetra vel turpis. Vivamus at augue eget arcu dictum varius duis. Leo duis ut diam quam nulla porttitor massa id neque. Pellentesque sit amet porttitor eget dolor morbi. Suspendisse ultrices gravida dictum fusce.
-                    Sit amet consectetur adipiscing elit pellentesque habitant morbi tristique. Aenean sed adipiscing diam donec. Lacus laoreet non curabitur gravida arcu. Phasellus egestas tellus rutrum tellus pellentesque eu. Posuere morbi leo urna molestie at. Vitae congue mauris rhoncus aenean vel elit scelerisque. Consectetur lorem donec massa sapien faucibus. Pretium vulputate sapien nec sagittis aliquam malesuada bibendum arcu. Diam vulputate ut pharetra sit amet. Nam at lectus urna duis convallis convallis tellus id interdum. Arcu cursus euismod quis viverra nibh. Ac felis donec et odio pellentesque. Faucibus in ornare quam viverra orci sagittis eu volutpat. Sed lectus vestibulum mattis ullamcorper velit sed ullamcorper.
+					<p th:text="${articleVO.articleContent}"></p>
                 </div>
                 <div id="article-file">
                     <h5>첨부파일</h5>
@@ -118,7 +117,7 @@
             </div>
             <div id="" class="flex-row article-btn-group">
                 <a href="" class="btn-green">답글 작성</a>
-                <a href="" class="btn-white">목록</a>
+                <a href="/board" class="btn-white">목록</a>
             </div>
         </div>
     </div>

@@ -14,11 +14,11 @@
 <body>
     <div class="navbar-wrapper flex-row">
         <div class="navbar-title flex-row">
-            <span>게시판</span>
+            <span><a href="/">게시판</a></span>
             <div class="navbar-category flex-row">
-                <a href="" class="activated">게시판A</a>
-                <a href="">게시판B</a>
-                <a href="">게시판C</a>
+                <a href="/board" class="activated">자유게시판</a>
+                <a href="/notice">공지사항</a>
+                <a href="/shop">Shop</a>
             </div>
             <!-- <ul class="flex-row">
                 <li>로그인</li>
@@ -44,7 +44,7 @@
                         <input type="submit" id="submit" class="btn-green" value="검색">
                     </form>
                 </div>
-                <button id="article-write" class="btn-white" type="button">글쓰기</button>
+                <a href="/board/write" id="article-write" class="btn-white">글쓰기</a>
             </div>
             <table id="board">
                 <thead>
@@ -58,38 +58,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>19</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>31</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>18</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>17</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>23</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>16</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
                     <tr>
                         <td>15</td>
                         <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
@@ -106,120 +74,20 @@
                         <td>10</td>
                         <td><i class="fa-solid fa-paperclip file-attach"></i></td>
                     </tr>
-                    <tr>
-                        <td>14</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[0]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>13</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[2]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>9</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>12</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[1]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>12</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>11</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>8</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>16</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>45</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[3]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[0]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>12</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[0]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[0]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td><i class="fa-solid fa-paperclip file-attach"></i></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[2]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>11</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[1]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>게시판 제목입니다<span class="reply-cnt">[1]</span></td>
-                        <td>작성자</td>
-                        <td>2024.02.01</td>
-                        <td>10</td>
+                    <tr th:each="articleVO : ${articleList}" th:classappend="${articleVO.upperArticleId != null} ? 'level-1' : ''">
+                        <td th:text="${articleVOStat.count}"></td>
+                        <td>
+							<a th:href="@{|/board/${articleVO.articleId}|}" th:text="${articleVO.articleTitle}"></a>
+							<span class="reply-cnt">[1]</span>
+						</td>
+                        <td th:text="${articleVO.memberName}"></td>
+                        <td th:text="${articleVO.articleCreateDate}"></td>
+                        <td th:text="${articleVO.viewCnt}"></td>
                         <td></td>
                     </tr>
                 </tbody>
             </table>
+			
             <div class="flex-row" id="page-area">
                 <a href="">처음</a>
                 <a href="">이전</a>

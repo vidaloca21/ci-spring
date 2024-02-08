@@ -2,6 +2,7 @@ package com.cafe.bbs.app.article.vo;
 
 public class ArticleVO extends ArticleMasterVO {
 	
+	private ArticleMasterVO articleMasterVO;
 	private String articleId;
 	private String upperArticleId;
 	private String articleTitle;
@@ -9,6 +10,12 @@ public class ArticleVO extends ArticleMasterVO {
 	private int viewCnt;
 	
 	
+	public ArticleMasterVO getArticleMasterVO() {
+		return articleMasterVO;
+	}
+	public void setArticleMasterVO(ArticleMasterVO articleMasterVO) {
+		this.articleMasterVO = articleMasterVO;
+	}
 	public String getArticleId() {
 		return articleId;
 	}

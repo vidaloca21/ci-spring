@@ -28,4 +28,37 @@ public class ArticleDAOImpl extends SqlSessionDaoSupport implements ArticleDAO{
 		return getSqlSession().selectOne("getAllArticleCount");
 	}
 
+	@Override
+	public ArticleVO getOneArticleByArticleId(String articleId) {
+		return getSqlSession().selectOne("getOneArticleByArticleId", articleId);
+	}
+	
+	@Override
+	public int increaseViewCount(String articleId) {
+		return getSqlSession().update("increaseViewCount", articleId);
+	}
+	
+	@Override
+	public int createNewArticleInfo(ArticleVO articleVO) {
+		return getSqlSession().insert("createNewArticleInfo", articleVO);
+	}
+	
+	@Override
+	public int createNewArticle(ArticleVO articleVO) {
+		return getSqlSession().insert("createNewArticle", articleVO);
+	}
+
+	@Override
+	public int modifyArticleInfo(ArticleVO articleVO) {
+		return getSqlSession().update("modifyArticleInfo", articleVO);
+	}
+	@Override
+	public int modifyArticle(ArticleVO articleVO) {
+		return getSqlSession().update("modifyArticle", articleVO);
+	}
+	
+	@Override
+	public int deleteOneArticleByArticleId(String articleId) {
+		return getSqlSession().update("deleteOneArticleByArticleId", articleId);
+	}
 }

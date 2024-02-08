@@ -2,14 +2,34 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cafe.bbs.app.article.dao">
+	
+	<resultMap id="articleVOMap" 
+			   type="com.cafe.bbs.app.article.vo.ArticleVO"
+			   autoMapping="true">
+		<id column="ARTICLE_ID" property="articleId" />
+		<association property="articleMasterVO"
+					 javaType="com.cafe.bbs.app.article.vo.ArticleMasterVO"
+					 autoMapping="true">
+		 </association>
+	</resultMap>
+	
 	<select id="getAllArticle" 
-			resultType="com.cafe.bbs.app.article.vo.ArticleVO">
-		SELECT ARTICLE_ID
-			 , UPPER_ARTICLE_ID
-			 , ARTICLE_TITLE
-			 , ARTICLE_CONTENT
-			 , VIEW_CNT
-		  FROM ARTICLE
+			resultMap="articleVOMap">
+		SELECT A.ARTICLE_ID
+			 , A.UPPER_ARTICLE_ID
+			 , A.ARTICLE_TITLE
+			 , A.ARTICLE_CONTENT
+			 , A.VIEW_CNT
+			 , AM.BOARD_ID
+			 , AM.MEMBER_NAME
+			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD') ARTICLE_CREATE_DATE
+			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD') ARTICLE_MODIFY_DATE
+			 , TO_CHAR(AM.ARTICLE_DELETE_DATE, 'YYYY-MM-DD') ARTICLE_DELETE_DATE
+		  FROM ARTICLE A
+		  JOIN ARTICLE_MASTER AM
+		    ON A.ARTICLE_ID = AM.ARTICLE_ID
+		 WHERE 1=1
+		   AND AM.ARTICLE_DELETE_DATE IS NULL
 	</select>
 	
 	<select id="getAllArticleCount" 
@@ -18,13 +38,87 @@
 		  FROM ARTICLE
 	</select>
 	
-	<select id="getOneArticleByArticleId">
-		SELECT ARTICLE_ID
-			 , UPPER_ARTICLE_ID
-			 , ARTICLE_TITLE
-			 , ARTICLE_CONTENT
-			 , VIEW_CNT
-		  FROM ARTICLE
-		 WHERE ARTICLE_ID = 'test01'
+	<select id="getOneArticleByArticleId"
+			parameterType="string"
+			resultMap="articleVOMap">
+		SELECT A.ARTICLE_ID
+			 , A.UPPER_ARTICLE_ID
+			 , A.ARTICLE_TITLE
+			 , A.ARTICLE_CONTENT
+			 , A.VIEW_CNT
+			 , AM.BOARD_ID
+			 , AM.MEMBER_NAME
+			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD') ARTICLE_CREATE_DATE
+			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD') ARTICLE_MODIFY_DATE
+			 , AM.ARTICLE_DELETE_DATE
+		  FROM ARTICLE A
+		  JOIN ARTICLE_MASTER AM
+		    ON A.ARTICLE_ID = AM.ARTICLE_ID
+		 WHERE 1=1
+		   AND AM.ARTICLE_DELETE_DATE IS NULL
+		   AND A.ARTICLE_ID = #{_parameter}
 	</select>
+
+	<update id="increaseViewCount"
+			parameterType="string">
+		UPDATE ARTICLE
+		   SET VIEW_CNT = VIEW_CNT +1
+		 WHERE ARTICLE_ID = #{_parameter}
+	</update>
+	
+	
+
+	<insert id="createNewArticleInfo"
+			parameterType="com.cafe.bbs.app.article.vo.ArticleMasterVO">
+		INSERT INTO ARTICLE_MASTER
+			 ( ARTICLE_ID
+			 , BOARD_ID
+			 , MEMBER_NAME
+			 , ARTICLE_CREATE_DATE )
+		VALUES
+			 ( ('AC-' || TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(SEQ_ARTICLE_MASTER_PK.NEXTVAL, 6, '0'))
+			 , 'test11'
+			 , #{memberName}
+			 , SYSDATE )
+	    <selectKey resultType="string" keyProperty="articleId" order="AFTER">
+			SELECT ('AC-' || TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(SEQ_ARTICLE_MASTER_PK.CURRVAL, 6, '0'))
+			  FROM DUAL
+		</selectKey>
+	</insert>
+	
+	<insert id="createNewArticle"
+			parameterType="com.cafe.bbs.app.article.vo.ArticleVO">
+		INSERT INTO ARTICLE
+			 ( ARTICLE_ID
+		 	 , UPPER_ARTICLE_ID
+			 , ARTICLE_TITLE
+			 , ARTICLE_CONTENT)
+		VALUES
+			 ( #{articleId}
+			 , #{upperArticleId}
+			 , #{articleTitle}
+			 , #{articleContent} )
+	</insert>
+	
+	<update id="modifyArticleInfo"
+			parameterType="com.cafe.bbs.app.article.vo.ArticleMasterVO">
+		UPDATE ARTICLE_MASTER
+		   SET MEMBER_NAME = #{memberName}
+			 , ARTICLE_MODIFY_DATE = SYSDATE
+		 WHERE ARTICLE_ID = #{articleId}
+	</update>
+	<update id="modifyArticle"
+			parameterType="com.cafe.bbs.app.article.vo.ArticleVO">
+		UPDATE ARTICLE
+		   SET ARTICLE_TITLE = #{articleTitle}
+			 , ARTICLE_CONTENT = #{articleContent}
+		 WHERE ARTICLE_ID = #{articleId}
+	</update>
+	
+	<update id="deleteOneArticleByArticleId"
+			parameterType="string">
+		UPDATE ARTICLE_MASTER
+		   SET ARTICLE_DELETE_DATE = SYSDATE
+		 WHERE ARTICLE_ID = #{_parameter}
+	</update>
 </mapper>
