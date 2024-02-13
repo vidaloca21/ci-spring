@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.cafe.bbs.app.article.vo.ArticleVO;
+import com.cafe.bbs.app.article.vo.SearchArticleVO;
 
 @Repository
 public class ArticleDAOImpl extends SqlSessionDaoSupport implements ArticleDAO{
@@ -21,6 +22,11 @@ public class ArticleDAOImpl extends SqlSessionDaoSupport implements ArticleDAO{
 	@Override
 	public List<ArticleVO> getAllArticle() {
 		return getSqlSession().selectList("getAllArticle");
+	}
+	
+	@Override
+	public List<ArticleVO> searchArticle(SearchArticleVO searchArticleVO) {
+		return getSqlSession().selectList("searchArticle", searchArticleVO);
 	}
 	
 	@Override

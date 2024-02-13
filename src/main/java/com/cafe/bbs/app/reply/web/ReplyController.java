@@ -49,4 +49,5 @@ public class ReplyController {
 		}
 		return "redirect:/board/" +articleId;
 	}
+	
 }

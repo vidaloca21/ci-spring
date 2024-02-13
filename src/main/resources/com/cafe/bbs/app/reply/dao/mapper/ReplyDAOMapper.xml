@@ -3,6 +3,9 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cafe.bbs.app.reply.dao">
 	
+	<resultMap id="replyCountMap" type="com.cafe.bbs.app.reply.vo.ReplyVO" autoMapping="true">
+	</resultMap>
+	
 	<select id="getRepliesByArticleId"
 			parameterType="string"
 			resultType="com.cafe.bbs.app.reply.vo.ReplyVO">
@@ -19,6 +22,15 @@
 		   AND REPLY_DELETE_DATE IS NULL
 	</select>
 	
+	<select id="getReplyCntByArticleId"
+			parameterType="string"
+			resultType="_int">
+		SELECT COUNT(1)
+		  FROM REPLY
+		 WHERE 1=1
+		   AND ARTICLE_ID = #{_parameter}
+		   AND REPLY_DELETE_DATE IS NULL
+	</select>
 	<insert id="createNewReply"
 			parameterType="com.cafe.bbs.app.reply.vo.ReplyVO">
 		INSERT INTO REPLY

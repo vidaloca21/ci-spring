@@ -10,7 +10,7 @@
 		<association property="articleMasterVO"
 					 javaType="com.cafe.bbs.app.article.vo.ArticleMasterVO"
 					 autoMapping="true">
-		 </association>
+		</association>
 	</resultMap>
 	
 	<select id="getAllArticle" 
@@ -35,7 +35,9 @@
 	<select id="getAllArticleCount" 
 			resultType="_int">
 		SELECT COUNT(1)
-		  FROM ARTICLE
+		  FROM ARTICLE_MASTER
+  		 WHERE 1=1
+		   AND ARTICLE_DELETE_DATE IS NULL
 	</select>
 	
 	<select id="getOneArticleByArticleId"
@@ -49,8 +51,8 @@
 			 , A.VIEW_CNT
 			 , AM.BOARD_ID
 			 , AM.MEMBER_NAME
-			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD') ARTICLE_CREATE_DATE
-			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD') ARTICLE_MODIFY_DATE
+			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD HH24:MI:SS') ARTICLE_CREATE_DATE
+			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD HH24:MI:SS') ARTICLE_MODIFY_DATE
 			 , AM.ARTICLE_DELETE_DATE
 		  FROM ARTICLE A
 		  JOIN ARTICLE_MASTER AM
@@ -122,4 +124,37 @@
 		   SET ARTICLE_DELETE_DATE = SYSDATE
 		 WHERE ARTICLE_ID = #{_parameter}
 	</update>
+	
+	<select id="searchArticle"
+			parameterType="com.cafe.bbs.app.article.vo.SearchArticleVO"
+			resultMap="articleVOMap">
+		<include refid="common.pagination_header" />
+		SELECT A.ARTICLE_ID
+			 , A.UPPER_ARTICLE_ID
+			 , A.ARTICLE_TITLE
+			 , A.ARTICLE_CONTENT
+			 , A.VIEW_CNT
+			 , AM.BOARD_ID
+			 , AM.MEMBER_NAME
+			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD') ARTICLE_CREATE_DATE
+			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD') ARTICLE_MODIFY_DATE
+			 , TO_CHAR(AM.ARTICLE_DELETE_DATE, 'YYYY-MM-DD') ARTICLE_DELETE_DATE
+		  FROM ARTICLE A
+		  JOIN ARTICLE_MASTER AM
+		    ON A.ARTICLE_ID = AM.ARTICLE_ID
+		 WHERE 1=1
+		   AND AM.ARTICLE_DELETE_DATE IS NULL
+		<if test='keyword != null and keyword != ""'>
+			<if test='searchType == "title"'>
+		   AND A.ARTICLE_TITLE LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test='searchType == "content"'>
+		   AND A.ARTICLE_CONTENT LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test='searchType == "writer"'>
+		   AND AM.MEMBER_NAME LIKE '%' || #{keyword} || '%'	
+			</if>
+		</if>
+	    <include refid="common.pagination_footer" />
+	</select>
 </mapper>

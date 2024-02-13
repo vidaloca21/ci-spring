@@ -8,7 +8,58 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/article.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="/js/article.js"></script>
+    <script th:inline="javascript">
+		$().ready(function() {
+			$("#modal-wrapper").click(function() {
+			})
+			$("#article-modify").click(function() {
+				$("#modal-wrapper").removeClass("hidden")
+				$("#password-submit-btn").click(function() {
+					var isCorrect = $("#articlePW").val() == $("#password-confirm").val()
+					if (isCorrect) {
+						location.href = $("#article-modify").data("link")
+					} else {
+						alert("잘못된 비밀번호입니다!")
+						location.reload();
+					}
+				})
+			})
+			$("#article-delete").click(function() {
+				$("#modal-wrapper").removeClass("hidden")
+				$("#password-submit-btn").click(function() {
+					var isCorrect =  $("#articlePW").val() == $("#password-confirm").val()
+					if (isCorrect) {
+                        if (confirm("게시글을 삭제합니다")) {
+                            location.href = $("#article-delete").data("link");
+                        } else {
+							location.reload();
+						}
+					} else {
+						alert("잘못된 비밀번호입니다!")
+						location.reload();
+					}
+				})
+			})
+            $(".reply-delete").click(function() {
+				var deleteLink = $(this).data("link")
+				var replyPW = $(this).parent().find("input").val();
+				$("#modal-wrapper").removeClass("hidden")
+				$("#password-submit-btn").click(function() {
+					var isCorrect =  replyPW === $("#password-confirm").val()
+					if (isCorrect) {
+                        if (confirm("댓글을 삭제합니다")) {
+                            location.href = deleteLink;
+                        } else {
+							location.reload();
+						}
+					} else {
+						alert("잘못된 비밀번호입니다!")
+						location.reload();
+					}
+				})
+            })
+		})
+	</script>
 </head>
 <body>
     <div class="navbar-wrapper flex-row">
@@ -38,12 +89,15 @@
                         <ul class="flex-row writer-info">
                             <li><span class="user-nickname" th:text="${articleVO.memberName}">닉네임</span></li>
                             <li>작성:<span th:text="${articleVO.articleCreateDate}"></span></li>
-                            <li>수정:<span th:text="${articleVO.articleModifyDate}"></span></li>
+                            <th:block th:if="${articleVO.articleModifyDate != null}">
+                            	<li>수정:<span th:text="${articleVO.articleModifyDate}"></span></li>
+                            </th:block>
                             <li>조회수<span th:text="${articleVO.viewCnt}"></span></li>
                         </ul>
                         <ul class="flex-row add-delete">
-                            <li><a th:href="@{|/board/modify/${articleVO.articleId}|}">수정</a></li>
-                            <li><a th:href="@{|/board/delete/${articleVO.articleId}|}">삭제</a></li>
+                            <input type="hidden" th:value="${articleVO.articlePassword}" id="articlePW">
+                            <li id="article-modify" th:data-link="@{|/board/modify/${articleVO.articleId}|}">수정</li>
+                            <li id="article-delete" th:data-link="@{|/board/delete/${articleVO.articleId}|}">삭제</li>
                         </ul>
                     </div>
                 </div>
@@ -58,17 +112,24 @@
                 </div>
                 <div id="replies-list">
 					<h5>댓글</h5>
+                    <th:block th:if="${replyList.empty}">
+                        <div class="reply-item">
+                            아직 작성된 댓글이 없습니다!
+                        </div>
+                    </th:block>
                     <div class="reply-item" th:each="replyVO : ${replyList}" th:attr="id=${replyVO.replyId}">
                         <div class="flex-row">
                             <ul class="flex-row writer-info">
                                 <li><span class="user-nickname" th:text="${replyVO.memberName}"></span></li>
                                 <li>작성:<span th:text="${replyVO.replyCreateDate}"></span></li>
-                                <li>수정:<span th:text="${replyVO.replyModifyDate}"></li>
+                                <th:block th:if="${replyVO.replyModifyDate != null}">
+                                	<li>수정:<span th:text="${replyVO.replyModifyDate}"></li>
+                                </th:block>
                             </ul>
                             <ul class="flex-row add-delete">
+                                <input type="hidden" class="replyPW" th:value="${replyVO.replyPassword}">
                                 <li>수정</li>
-                                <li class="reply-delete">삭제</li>
-                                <!-- <li><a th:href="@{/reply(action='delete',replyId=${replyVO.replyId},articleId=${replyVO.articleId})}">삭제</a></li> -->
+                                <li class="reply-delete" th:data-link="@{/reply(action='delete',replyId=${replyVO.replyId},articleId=${replyVO.articleId})}">삭제</li>
                             </ul>
                         </div>
                         <div class="reply-content" th:text="${replyVO.replyContent}"></div>
@@ -103,6 +164,13 @@
                 <a href="" class="btn-green">답글 작성</a>
                 <a href="" class="btn-white">목록</a>
             </div>
+        </div>
+    </div>
+    <div id="modal-wrapper" class="hidden">
+        <div id="modal-password" class="flex-col">
+            <h3>비밀번호 확인</h3>
+            <input type="password" name="password-confirm" id="password-confirm" />
+            <button id="password-submit-btn" class="btn-green">확인</button>
         </div>
     </div>
 </body>

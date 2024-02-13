@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cafe.bbs.app.article.dao.ArticleDAO;
 import com.cafe.bbs.app.article.vo.ArticleVO;
+import com.cafe.bbs.app.article.vo.SearchArticleVO;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -16,8 +17,12 @@ public class ArticleServiceImpl implements ArticleService {
 	private ArticleDAO articleDAO;
 	
 	@Override
-	public List<ArticleVO> getAllArticle() {
-		return articleDAO.getAllArticle();
+	public List<ArticleVO> getAllArticle(SearchArticleVO searchArticleVO) {
+		if (searchArticleVO == null) {
+			return articleDAO.getAllArticle();
+		} else {
+			return articleDAO.searchArticle(searchArticleVO);
+		}
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package com.cafe.bbs.app.reply.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,11 @@ public class ReplyServiceImpl implements ReplyService {
 		return replyDAO.getRepliesByArticleId(articleId);
 	}
 	
+	@Override
+	public int getReplyCntByArticleId(String articleId) {
+		return replyDAO.getReplyCntByArticleId(articleId);
+	}
+
 	@Transactional
 	@Override
 	public boolean createNewReply(ReplyVO replyVO) {

@@ -10,7 +10,6 @@ public class ArticleVO extends ArticleMasterVO {
 	private String articlePassword;
 	private int viewCnt;
 	
-	
 	public ArticleMasterVO getArticleMasterVO() {
 		return articleMasterVO;
 	}

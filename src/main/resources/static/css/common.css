@@ -111,6 +111,9 @@ h5 {
 .space-bet {
     justify-content: space-between;
 }
+.hidden {
+	display: none;
+}
 /* .btn-green:hover {
     color: #FAFAFA !important;
 }

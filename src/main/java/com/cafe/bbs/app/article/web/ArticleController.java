@@ -1,6 +1,8 @@
 package com.cafe.bbs.app.article.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cafe.bbs.app.article.service.ArticleService;
 import com.cafe.bbs.app.article.vo.ArticleVO;
+import com.cafe.bbs.app.article.vo.SearchArticleVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
 
@@ -28,9 +31,18 @@ public class ArticleController {
 	
 	
 	@GetMapping("")
-	public String getAricleList(Model model) {
-		List<ArticleVO> articleList = articleService.getAllArticle();
+	public String getAricleList(@ModelAttribute SearchArticleVO searchArticleVO, Model model) {
+		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
+		searchArticleVO.setPageCount(articleService.getAllArticleCount());
+		Map<String, Object> replyCntMap = new HashMap<>();
+		for (ArticleVO article : articleList) {
+			String articleId = article.getArticleId();
+			int replyCnt = replyService.getReplyCntByArticleId(articleId);
+			replyCntMap.put(articleId, replyCnt);
+		}
 		model.addAttribute("articleList", articleList);
+		model.addAttribute("searchArticleVO", searchArticleVO);
+		model.addAttribute("replyCnt", replyCntMap);
 		return "articleList";
 	}
 	
