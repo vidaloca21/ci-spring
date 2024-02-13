@@ -22,7 +22,13 @@
 }
 /* #article-writer 삭제 */
 #article-writer {
-    width: 30%;
+    width: 49%;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 14px;
+}
+#article-password {
+    width: 49%;
     margin-top: 15px;
     padding: 10px;
     font-size: 14px;

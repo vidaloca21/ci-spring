@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cafe.bbs.app.article.service.ArticleService;
 import com.cafe.bbs.app.article.vo.ArticleVO;
+import com.cafe.bbs.app.reply.service.ReplyService;
+import com.cafe.bbs.app.reply.vo.ReplyVO;
 
 
 @Controller
@@ -21,6 +23,9 @@ public class ArticleController {
 	
 	@Autowired
 	private ArticleService articleService;
+	@Autowired
+	private ReplyService replyService;
+	
 	
 	@GetMapping("")
 	public String getAricleList(Model model) {
@@ -32,7 +37,9 @@ public class ArticleController {
 	@GetMapping("/{articleId}")
 	public String getOneArticle(@PathVariable("articleId") String articleId, Model model) {
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
-		model.addAttribute(article);
+		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
+		model.addAttribute("articleVO", article);
+		model.addAttribute("replyList", replyList);
 		return "articleOne";
 	}
 

@@ -45,6 +45,7 @@
 			 , A.UPPER_ARTICLE_ID
 			 , A.ARTICLE_TITLE
 			 , A.ARTICLE_CONTENT
+			 , A.ARTICLE_PASSWORD
 			 , A.VIEW_CNT
 			 , AM.BOARD_ID
 			 , AM.MEMBER_NAME
@@ -66,8 +67,6 @@
 		 WHERE ARTICLE_ID = #{_parameter}
 	</update>
 	
-	
-
 	<insert id="createNewArticleInfo"
 			parameterType="com.cafe.bbs.app.article.vo.ArticleMasterVO">
 		INSERT INTO ARTICLE_MASTER
@@ -92,12 +91,14 @@
 			 ( ARTICLE_ID
 		 	 , UPPER_ARTICLE_ID
 			 , ARTICLE_TITLE
-			 , ARTICLE_CONTENT)
+			 , ARTICLE_CONTENT
+			 , ARTICLE_PASSWORD )
 		VALUES
 			 ( #{articleId}
 			 , #{upperArticleId}
 			 , #{articleTitle}
-			 , #{articleContent} )
+			 , #{articleContent}
+			 , #{articlePassword} )
 	</insert>
 	
 	<update id="modifyArticleInfo"

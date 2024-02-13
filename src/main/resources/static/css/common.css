@@ -108,6 +108,9 @@ h5 {
     font-weight: bolder !important;
     color: #FE5F55 !important;
 }
+.space-bet {
+    justify-content: space-between;
+}
 /* .btn-green:hover {
     color: #FAFAFA !important;
 }

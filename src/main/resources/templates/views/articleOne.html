@@ -7,8 +7,8 @@
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/article.css">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="./article.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/js/article.js"></script>
 </head>
 <body>
     <div class="navbar-wrapper flex-row">
@@ -57,67 +57,51 @@
                     </ul>
                 </div>
                 <div id="replies-list">
-                    <div class="reply-item">
+					<h5>댓글</h5>
+                    <div class="reply-item" th:each="replyVO : ${replyList}" th:attr="id=${replyVO.replyId}">
                         <div class="flex-row">
                             <ul class="flex-row writer-info">
-                                <li><span class="user-nickname">닉네임</span></li>
-                                <li>작성:<span>2024-02-01 19:10</span></li>
-                                <li></li>
+                                <li><span class="user-nickname" th:text="${replyVO.memberName}"></span></li>
+                                <li>작성:<span th:text="${replyVO.replyCreateDate}"></span></li>
+                                <li>수정:<span th:text="${replyVO.replyModifyDate}"></li>
                             </ul>
                             <ul class="flex-row add-delete">
                                 <li>수정</li>
-                                <li>삭제</li>
+                                <li class="reply-delete">삭제</li>
+                                <!-- <li><a th:href="@{/reply(action='delete',replyId=${replyVO.replyId},articleId=${replyVO.articleId})}">삭제</a></li> -->
                             </ul>
                         </div>
-                        <div class="reply-content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Variu
-                        </div>
-                    </div>
-                    <div class="reply-item">
-                        <div class="flex-row">
-                            <ul class="flex-row writer-info">
-                                <li><span class="user-nickname">닉네임</span></li>
-                                <li>작성:<span>2024-02-01 20:20</span></li>
-                                <li></li>
-                            </ul>
-                            <ul class="flex-row add-delete">
-                                <li>수정</li>
-                                <li>삭제</li>
-                            </ul>
-                        </div>
-                        <div class="reply-content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Variu
-                        </div>
-                    </div>
-                    <div class="reply-item">
-                        <div class="flex-row">
-                            <ul class="flex-row writer-info">
-                                <li><span class="user-nickname">닉네임</span></li>
-                                <li>작성:<span>2024-02-01 20:43</span></li>
-                                <li>수정:<span>2024-02-01 20:45</span></li>
-                            </ul>
-                            <ul class="flex-row add-delete">
-                                <li>수정</li>
-                                <li>삭제</li>
-                            </ul>
-                        </div>
-                        <div class="reply-content">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Variu
-                        </div>
+                        <div class="reply-content" th:text="${replyVO.replyContent}"></div>
                     </div>
                 </div>
-                <div id="replies-write">
-                    <div class="flex-col">
-                        <h5>댓글 쓰기</h5>
-                        <input type="text" name="" id="" placeholder="댓글 작성자">
-                    </div>
-                    <textarea name="" id="reply-write" placeholder="댓글 내용"></textarea>
-                    <button id="reply-submit" class="btn-green" type="button">등록</button>
+                <div id="reply-write-wrapper">
+                    <h5>댓글 쓰기</h5>
+	                <form th:action="@{/reply/write}" th:object="${replyVO}" method="post">
+	                    <div id="replies-write">
+	                        <div class="flex-col">
+	                            <input type="text" name="memberName" id="member-name" placeholder="댓글 작성자">
+	                            <input type="password" name="replyPassword" id="reply-password" placeholder="비밀번호">
+	                        </div>
+	                        <textarea name="replyContent" id="reply-write" placeholder="댓글 내용"></textarea>
+	                        <input type="hidden" name="articleId" th:value="${articleVO.articleId}">
+	                        <input id="reply-submit" class="btn-green" type="submit" value="등록">
+	                    </div>
+	                </form>
                 </div>
             </div>
-            <div id="" class="flex-row article-btn-group">
+            <div id="" class="flex-col flex-start article-link-group">
+                <div>
+                    <span>이전</span>
+                    <a href="">이전 글의 제목입니다</a>
+                </div>
+                <div>
+                    <span>다음</span>
+                    <a href="">다음 글의 제목입니다</a>
+                </div>
+            </div>
+            <div id="" class="flex-row flex-end article-btn-group">
                 <a href="" class="btn-green">답글 작성</a>
-                <a href="/board" class="btn-white">목록</a>
+                <a href="" class="btn-white">목록</a>
             </div>
         </div>
     </div>

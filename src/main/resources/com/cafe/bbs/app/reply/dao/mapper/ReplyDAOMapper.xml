@@ -1,0 +1,47 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cafe.bbs.app.reply.dao">
+	
+	<select id="getRepliesByArticleId"
+			parameterType="string"
+			resultType="com.cafe.bbs.app.reply.vo.ReplyVO">
+		SELECT REPLY_ID
+			 , ARTICLE_ID
+			 , MEMBER_NAME
+			 , REPLY_CONTENT
+			 , REPLY_PASSWORD
+			 , REPLY_CREATE_DATE
+			 , REPLY_MODIFY_DATE
+		  FROM REPLY
+		 WHERE 1=1
+		   AND ARTICLE_ID = #{_parameter}
+		   AND REPLY_DELETE_DATE IS NULL
+	</select>
+	
+	<insert id="createNewReply"
+			parameterType="com.cafe.bbs.app.reply.vo.ReplyVO">
+		INSERT INTO REPLY
+			 ( REPLY_ID
+			 , ARTICLE_ID
+			 , MEMBER_NAME
+			 , REPLY_CONTENT
+			 , REPLY_PASSWORD
+			 , REPLY_CREATE_DATE )
+		VALUES
+			 ( ( 'RE-' || TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(SEQ_BOARD_PK.NEXTVAL, 6, '0') )
+			 , #{articleId}
+			 , #{memberName}
+			 , #{replyContent}
+			 , #{replyPassword}
+			 , SYSDATE )
+	</insert>
+	
+	<update id="deleteOneReplyByReplyId"
+			parameterType="string">
+		UPDATE REPLY
+		   SET REPLY_DELETE_DATE = SYSDATE
+		 WHERE REPLY_ID = #{_parameter}
+	</update>
+	
+</mapper>

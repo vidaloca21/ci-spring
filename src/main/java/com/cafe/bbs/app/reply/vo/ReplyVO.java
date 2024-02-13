@@ -6,6 +6,7 @@ public class ReplyVO {
 	private String articleId;
 	private String memberName;
 	private String replyContent;
+	private String replyPassword;
 	private String replyCreateDate;
 	private String replyModifyDate;
 	private String replyDeleteDate;
@@ -34,6 +35,12 @@ public class ReplyVO {
 	}
 	public void setReplyContent(String replyContent) {
 		this.replyContent = replyContent;
+	}
+	public String getReplyPassword() {
+		return replyPassword;
+	}
+	public void setReplyPassword(String replyPassword) {
+		this.replyPassword = replyPassword;
 	}
 	public String getReplyCreateDate() {
 		return replyCreateDate;

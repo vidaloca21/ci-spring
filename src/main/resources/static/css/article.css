@@ -58,6 +58,9 @@
     border-top: 1px solid #7A9E9F;
     min-height: 80px;
     padding-top: 10px;
+    > h5 {
+ 	   margin: 5px 0;
+    }
 }
 .reply-item {
     padding: 10px 5px;
@@ -69,6 +72,11 @@
 .reply-content {
     margin-top: 5px;
     font-size: 14px;
+}
+#reply-write-wrapper {
+    > h5 {
+        margin-bottom: 7px;
+    }
 }
 #replies-write {
     display: flex;
@@ -89,14 +97,41 @@
         padding: 12px;
         resize: none;
     }
-    > button {
+    > input[type=submit] {
         width: 8%;
         font-size: 14px;
     }
 }
-.article-btn-group {
+.flex-end {
     display: flex;
     justify-content: flex-end;
+}
+.flex-start {
+    display: flex;
+    justify-content: flex-start;
+}
+.article-link-group {
+    width: 100%;
+    margin-top: 20px;
+    > div {
+        padding: 15px 20px;
+        border-top: 1px solid #4f636765;
+        border-bottom: 1px solid #4f636765;
+        > span {
+            font-size: 14px;
+            padding-right: 20px;
+            border-right: 1px solid #4f636765;
+        }
+        > a {
+            font-size: 14px;
+            padding-left: 20px;
+        }
+    }
+    > div:last-child {
+        border-top: none;
+    }
+}
+.article-btn-group {
     width: 100%;
     margin-top: 20px;
     gap: 10px;
