@@ -74,7 +74,18 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Transactional
 	@Override
-	public boolean modifyArticle(ArticleVO articleVO) {
+	public boolean modifyArticle(ArticleVO articleVO, List<MultipartFile> attachFiles) {
+		for (MultipartFile file: attachFiles) {
+			StoredFile storedFile = fileHandler.storeFile(file);
+			if (storedFile == null) {
+				break;
+			}
+			AttachmentVO attachmentVO = new AttachmentVO();
+			attachmentVO.setArticleId(articleVO.getArticleId());
+			attachmentVO.setOriginFilename(storedFile.getFileName());
+			attachmentVO.setUuidFilename(storedFile.getRealFileName());
+			attachmentDAO.storeNewFile(attachmentVO);
+		}
 		boolean isSuccess = articleDAO.modifyArticleInfo(articleVO) >0 && articleDAO.modifyArticle(articleVO) >0;  
 		return isSuccess;
 	}

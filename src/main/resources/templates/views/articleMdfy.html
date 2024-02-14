@@ -42,15 +42,15 @@
 	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요" th:value="${articleVO.articleTitle}">
 	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"  th:text="${articleVO.articleContent}"></textarea>
 	                
-	                <th:block th:if="${!fileList.empty}">
-	                    <div id="article-file">
-	                        <h5>첨부파일</h5>
+                    <div id="article-file">
+    	                <h5>첨부파일</h5>
+		                <th:block th:if="${!fileList.empty}">
 	                        <ul class="flex-row" th:each="file : ${fileList}" >
 	                            <li><a th:href="@{|/file/download/${file.attachmentId}|}" th:text="${file.originFilename}"></a></li>
 	                        </ul>
-	                    </div>
+		                </th:block>
 		                <input type="file" name="attachFiles" id="article-flie" multiple>
-	                </th:block>
+                    </div>
 	                
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>

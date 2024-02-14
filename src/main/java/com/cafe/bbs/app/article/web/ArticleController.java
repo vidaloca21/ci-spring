@@ -108,10 +108,9 @@ public class ArticleController {
 	}
 	
 	@PostMapping("/modify")
-	public String modifyArticle(@ModelAttribute ArticleVO articleVO) {
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println(articleVO.getArticleId());
-		boolean isSuccess = articleService.modifyArticle(articleVO);
+	public String modifyArticle(@ModelAttribute ArticleVO articleVO
+			 				  , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles) {
+		boolean isSuccess = articleService.modifyArticle(articleVO, attachFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
 			return "redirect:/board/" +articleId;

@@ -13,7 +13,7 @@ public interface ArticleService {
 	public int getAllArticleCount();
 	public ArticleVO getOneArticleByArticleId(String articleId);
 	public boolean createNewArticle(ArticleVO articleVO, List<MultipartFile> attachFiles);
-	public boolean modifyArticle(ArticleVO articleVO);
+	public boolean modifyArticle(ArticleVO articleVO, List<MultipartFile> attachFiles);
 	public boolean deleteOneArticle(String articleId);
 	public boolean confirmPassword(ArticleVO articleVO);
 }
