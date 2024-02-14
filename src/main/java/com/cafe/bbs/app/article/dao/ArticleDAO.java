@@ -19,5 +19,7 @@ public interface ArticleDAO {
 	public int modifyArticleInfo(ArticleVO articleVO);
 	public int modifyArticle(ArticleVO articleVO);
 	
-	public int deleteOneArticleByArticleId(String articleId);
+	public int deleteOneArticle(String articleId);
+	public ArticleVO getArticlePassword(String articleId);
+	
 }

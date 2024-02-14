@@ -82,7 +82,7 @@
 			 , ARTICLE_CREATE_DATE )
 		VALUES
 			 ( ('AC-' || TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(SEQ_ARTICLE_MASTER_PK.NEXTVAL, 6, '0'))
-			 , 'test11'
+			 , #{boardId}
 			 , #{memberName}
 			 , SYSDATE )
 	    <selectKey resultType="string" keyProperty="articleId" order="AFTER">
@@ -98,13 +98,15 @@
 		 	 , UPPER_ARTICLE_ID
 			 , ARTICLE_TITLE
 			 , ARTICLE_CONTENT
-			 , ARTICLE_PASSWORD )
+			 , ARTICLE_PASSWORD
+			 , ARTICLE_SALT )
 		VALUES
 			 ( #{articleId}
 			 , #{upperArticleId}
 			 , #{articleTitle}
 			 , #{articleContent}
-			 , #{articlePassword} )
+			 , #{articlePassword}
+			 , #{articleSalt} )
 	</insert>
 	
 	<update id="modifyArticleInfo"
@@ -122,7 +124,7 @@
 		 WHERE ARTICLE_ID = #{articleId}
 	</update>
 	
-	<update id="deleteOneArticleByArticleId"
+	<update id="deleteOneArticle"
 			parameterType="string">
 		UPDATE ARTICLE_MASTER
 		   SET ARTICLE_DELETE_DATE = SYSDATE
@@ -165,5 +167,14 @@
    	     ORDER SIBLINGS BY A.ARTICLE_ID DESC
 	    <include refid="common.pagination_footer" />
 	   ORDER BY RNUM
+	</select>
+	
+	<select id="getArticlePassword"
+			parameterType="string"
+			resultType="com.cafe.bbs.app.article.vo.ArticleVO">
+		SELECT ARTICLE_PASSWORD
+			 , ARTICLE_SALT
+		  FROM ARTICLE
+		 WHERE ARTICLE_ID = #{_parameter}
 	</select>
 </mapper>

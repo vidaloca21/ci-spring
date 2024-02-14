@@ -19,29 +19,37 @@
 			$("#article-modify").click(function() {
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
-					var isCorrect = $("#articlePW").val() == $("#password-confirm").val()
-					if (isCorrect) {
-						location.href = $("#article-modify").data("link")
-					} else {
-						alert("잘못된 비밀번호입니다!")
-						location.reload();
-					}
+                    let mdfyForm = $('<form></form>')
+                    mdfyForm.attr("action", "/board/modify")
+                    mdfyForm.attr("method", "get")
+                    let articleIdDom = $('<input type="hidden"/>')
+                    articleIdDom.attr("name", "articleId")
+                    articleIdDom.val(articleId);
+                    let articlePwDom = $('<input type="hidden"/>')
+                    articlePwDom.attr("name", "articlePassword")
+                    articlePwDom.val($("#password-confirm").val());
+                    mdfyForm.append(articleIdDom)
+                    mdfyForm.append(articlePwDom)
+                    $("body").append(mdfyForm)
+                    mdfyForm.submit()
 				})
 			})
 			$("#article-delete").click(function() {
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
-					var isCorrect =  $("#articlePW").val() == $("#password-confirm").val()
-					if (isCorrect) {
-                        if (confirm("게시글을 삭제합니다")) {
-                            location.href = $("#article-delete").data("link");
-                        } else {
-							location.reload();
-						}
-					} else {
-						alert("잘못된 비밀번호입니다!")
-						location.reload();
-					}
+                    let deleteForm = $('<form></form>')
+                    deleteForm.attr("action", "/board/delete")
+                    deleteForm.attr("method", "get")
+                    let articleIdDom = $('<input type="hidden"/>')
+                    articleIdDom.attr("name", "articleId")
+                    articleIdDom.val(articleId);
+                    let articlePwDom = $('<input type="hidden"/>')
+                    articlePwDom.attr("name", "articlePassword")
+                    articlePwDom.val($("#password-confirm").val());
+                    deleteForm.append(articleIdDom)
+                    deleteForm.append(articlePwDom)
+                    $("body").append(deleteForm)
+                    deleteForm.submit()
 				})
 			})
             $(".reply-delete").click(function() {
@@ -149,12 +157,14 @@
                 <div id="article-content">
 					<p th:text="${articleVO.articleContent}"></p>
                 </div>
-                <div id="article-file">
-                    <h5>첨부파일</h5>
-                    <ul class="flex-row">
-                        <li>01.jpg</li>
-                    </ul>
-                </div>
+                <th:block th:if="${!fileList.empty}">
+                    <div id="article-file">
+                        <h5>첨부파일</h5>
+                        <ul class="flex-row" th:each="file : ${fileList}" >
+                            <li><a th:href="@{|/file/download/${file.attachmentId}|}" th:text="${file.originFilename}"></a></li>
+                        </ul>
+                    </div>
+                </th:block>
                 <div id="replies-list">
 					<h5>댓글</h5>
                     <th:block th:if="${replyList.empty}">
@@ -206,7 +216,7 @@
                 </div>
             </div>
             <div id="" class="flex-row flex-end article-btn-group">
-                <a th:href="@{/board/write(upperArticleId=${articleVO.articleId})}"class="btn-green">답글 작성</a>
+                <a th:href="@{/board/write(upperArticleId=${articleVO.articleId})}" class="btn-green">답글 작성</a>
                 <a href="/board" class="btn-white">목록</a>
             </div>
         </div>

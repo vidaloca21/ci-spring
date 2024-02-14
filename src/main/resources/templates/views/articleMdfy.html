@@ -32,17 +32,30 @@
     <div id="container">
         <div id="article-write">
             <h3>게시글 수정</h3>
-            <p id="upper-article-title">상위 게시글:<span>제목입니다</span></p>
-            <form th:action="@{|/board/modify/${articleVO.articleId}|}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+            <th:block th:if="${upperArticleVO != null}">
+            	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
+            </th:block>
+            <form action="/board/modify" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="articleId" th:value="${articleVO.articleId}" >
 				<div class="flex-col">
 	                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}">
 	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요" th:value="${articleVO.articleTitle}">
 	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"  th:text="${articleVO.articleContent}"></textarea>
-	                <input type="file" name="attachFiles[]" id="article-flie" multiple>
+	                
+	                <th:block th:if="${!fileList.empty}">
+	                    <div id="article-file">
+	                        <h5>첨부파일</h5>
+	                        <ul class="flex-row" th:each="file : ${fileList}" >
+	                            <li><a th:href="@{|/file/download/${file.attachmentId}|}" th:text="${file.originFilename}"></a></li>
+	                        </ul>
+	                    </div>
+		                <input type="file" name="attachFiles" id="article-flie" multiple>
+	                </th:block>
+	                
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>
-            <button type="button" class="btn-white">목록으로 돌아가기</button>
+            <button type="button" class="btn-white" onclick="location.href='/board'">목록으로 돌아가기</button>
         </div>
     </div>
 </body>

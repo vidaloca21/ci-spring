@@ -7,8 +7,6 @@
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/articleWrite.css">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="./articleWrite.js"></script> -->
 </head>
 <body>
     <div class="navbar-wrapper flex-row">
@@ -46,11 +44,11 @@
                     </div>
 	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요">
 	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"></textarea>
-	                <input type="file" name="attachFiles[]" id="article-flie" multiple>
+	                <input type="file" name="attachFiles" id="article-flie" multiple>
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>
-            <button type="button" class="btn-white">목록으로 돌아가기</button>
+            <button type="button" class="btn-white" onclick="location.href='/board'">목록으로 돌아가기</button>
         </div>
     </div>
 </body>

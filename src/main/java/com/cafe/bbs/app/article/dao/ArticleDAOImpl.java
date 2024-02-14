@@ -64,7 +64,12 @@ public class ArticleDAOImpl extends SqlSessionDaoSupport implements ArticleDAO{
 	}
 	
 	@Override
-	public int deleteOneArticleByArticleId(String articleId) {
-		return getSqlSession().update("deleteOneArticleByArticleId", articleId);
+	public int deleteOneArticle(String articleId) {
+		return getSqlSession().update("deleteOneArticle", articleId);
+	}
+	
+	@Override
+	public ArticleVO getArticlePassword(String articleId) {
+		return getSqlSession().selectOne("getArticlePassword", articleId);
 	}
 }

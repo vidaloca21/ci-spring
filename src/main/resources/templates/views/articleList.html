@@ -72,7 +72,10 @@
                         <td th:text="${articleVO.memberName}"></td>
                         <td th:text="${articleVO.articleCreateDate}"></td>
                         <td th:text="${articleVO.viewCnt}"></td>
-                        <td th:text="${articleVO.level}"></td>
+                        <td th:if="${hasFile[articleVO.articleId]}">
+							<i class="fa-solid fa-paperclip"></i>
+						</td>
+                        <td th:unless="${hasFile[articleVO.articleId]}"></td>
                     </tr>
                 </tbody>
             </table>

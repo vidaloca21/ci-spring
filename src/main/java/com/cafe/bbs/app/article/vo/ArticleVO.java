@@ -8,6 +8,7 @@ public class ArticleVO extends ArticleMasterVO {
 	private String articleTitle;
 	private String articleContent;
 	private String articlePassword;
+	private String articleSalt;
 	private int viewCnt;
 	private int level;
 	
@@ -46,6 +47,12 @@ public class ArticleVO extends ArticleMasterVO {
 	}
 	public void setArticlePassword(String articlePassword) {
 		this.articlePassword = articlePassword;
+	}
+	public String getArticleSalt() {
+		return articleSalt;
+	}
+	public void setArticleSalt(String articleSalt) {
+		this.articleSalt = articleSalt;
 	}
 	public int getViewCnt() {
 		return viewCnt;

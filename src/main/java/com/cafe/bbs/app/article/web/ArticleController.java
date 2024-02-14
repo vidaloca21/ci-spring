@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cafe.bbs.app.article.service.ArticleService;
 import com.cafe.bbs.app.article.vo.ArticleVO;
 import com.cafe.bbs.app.article.vo.SearchArticleVO;
+import com.cafe.bbs.app.attachment.service.AttachmentService;
+import com.cafe.bbs.app.attachment.vo.AttachmentVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
 
@@ -28,6 +31,8 @@ public class ArticleController {
 	@Autowired
 	private ArticleService articleService;
 	@Autowired
+	private AttachmentService attachmentService;
+	@Autowired
 	private ReplyService replyService;
 	
 	
@@ -36,14 +41,18 @@ public class ArticleController {
 		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
 		searchArticleVO.setPageCount(articleService.getAllArticleCount());
 		Map<String, Object> replyCntMap = new HashMap<>();
+		Map<String, Object> fileMap = new HashMap<>();
 		for (ArticleVO article : articleList) {
 			String articleId = article.getArticleId();
 			int replyCnt = replyService.getReplyCntByArticleId(articleId);
 			replyCntMap.put(articleId, replyCnt);
+			boolean hasFile = attachmentService.hasFile(articleId);
+			fileMap.put(articleId, hasFile);
 		}
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
 		model.addAttribute("replyCnt", replyCntMap);
+		model.addAttribute("hasFile", fileMap);
 		return "articleList";
 	}
 	
@@ -51,8 +60,10 @@ public class ArticleController {
 	public String getOneArticle(@PathVariable("articleId") String articleId, Model model) {
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
+		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 		model.addAttribute("articleVO", article);
 		model.addAttribute("replyList", replyList);
+		model.addAttribute("fileList", fileList);
 		return "articleOne";
 	}
 
@@ -67,8 +78,10 @@ public class ArticleController {
 	}
 	
 	@PostMapping("/write")
-	public String createNewArticle(@ModelAttribute ArticleVO articleVO) {
-		boolean isSuccess = articleService.createNewArticle(articleVO);
+	public String createNewArticle(@ModelAttribute ArticleVO articleVO
+								 , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles) {
+		articleVO.setBoardId("BD-20240208-000001");
+		boolean isSuccess = articleService.createNewArticle(articleVO, attachFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
 			return "redirect:/board/" +articleId;
@@ -76,15 +89,28 @@ public class ArticleController {
 		return "articleWrite";
 	}
 	
-	@GetMapping("/modify/{articleId}")
-	public String modifyArticle(@PathVariable("articleId") String articleId, Model model) {
-		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
-		model.addAttribute(article);
-		return "articleMdfy";
+	@GetMapping("/modify")
+	public String modifyArticle(@ModelAttribute ArticleVO articleVO, Model model) {
+		boolean isConfirmed = articleService.confirmPassword(articleVO);
+		if (isConfirmed) {
+			ArticleVO article = articleService.getOneArticleByArticleId(articleVO.getArticleId());
+			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleVO.getArticleId());
+			if (articleVO.getUpperArticleId() != "") {
+				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(articleVO.getUpperArticleId());
+				model.addAttribute("upperArticleVO", upperArticleVO);
+			}
+			model.addAttribute(article);
+			model.addAttribute("fileList", fileList);
+			return "articleMdfy";
+		} else {
+			throw new IllegalArgumentException("비밀번호 틀림!");
+		}
 	}
 	
-	@PostMapping("/modify/{articleId}")
+	@PostMapping("/modify")
 	public String modifyArticle(@ModelAttribute ArticleVO articleVO) {
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		System.out.println(articleVO.getArticleId());
 		boolean isSuccess = articleService.modifyArticle(articleVO);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
@@ -94,13 +120,19 @@ public class ArticleController {
 	}
 	
 
-	@GetMapping("/delete/{articleId}")
-	public String deleteOneArticle(@PathVariable("articleId") String articleId) {
-		boolean isSuccess = articleService.deleteOneArticleByArticleId(articleId);
-		if (isSuccess) {
-			return "redirect:/board";
+	@GetMapping("/delete")
+	public String deleteOneArticle(@ModelAttribute ArticleVO articleVO) {
+		boolean isConfirmed = articleService.confirmPassword(articleVO);
+		if (isConfirmed) {
+			boolean isSuccess = articleService.deleteOneArticle(articleVO.getArticleId());
+			if (isSuccess) {
+				return "redirect:/board";
+			} else {
+				throw new IllegalArgumentException("삭제 실패!");
+			}
+		} else{
+			throw new IllegalArgumentException("비밀번호 틀림!");
 		}
-		return "articleList";
 	}
 	
 }
