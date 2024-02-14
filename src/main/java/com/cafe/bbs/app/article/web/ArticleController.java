@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cafe.bbs.app.article.service.ArticleService;
 import com.cafe.bbs.app.article.vo.ArticleVO;
@@ -56,7 +57,12 @@ public class ArticleController {
 	}
 
 	@GetMapping("/write")
-	public String createNewArticle() {
+	public String createNewArticle(@RequestParam(name = "upperArticleId", required = false) String upperArticleId
+								 , Model model) {
+		if (upperArticleId != "") {
+			ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(upperArticleId);
+			model.addAttribute("upperArticleVO", upperArticleVO);
+		}
 		return "articleWrite";
 	}
 	
@@ -96,4 +102,5 @@ public class ArticleController {
 		}
 		return "articleList";
 	}
+	
 }

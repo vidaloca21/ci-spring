@@ -32,8 +32,13 @@
     <div id="container">
         <div id="article-write">
             <h3>게시글 작성</h3>
-            <p id="upper-article-title">상위 게시글:<span>제목입니다</span></p>
+            <th:block th:if="${upperArticleVO != null}">
+            	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
+            </th:block>
             <form th:action="@{/board/write}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+				<th:block th:if="${upperArticleVO != null}">
+					<input type="hidden" name="upperArticleId" th:value="${upperArticleVO.articleId}">
+				</th:block>
                 <div class="flex-col">
                     <div class="flex-row space-bet">
                         <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임">

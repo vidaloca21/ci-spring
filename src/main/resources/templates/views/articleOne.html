@@ -141,8 +141,8 @@
                         </ul>
                         <ul class="flex-row add-delete">
                             <input type="hidden" th:value="${articleVO.articlePassword}" id="articlePW">
-                            <li id="article-modify" th:data-link="@{|/board/modify/${articleVO.articleId}|}">수정</li>
-                            <li id="article-delete" th:data-link="@{|/board/delete/${articleVO.articleId}|}">삭제</li>
+                            <li id="article-modify" class="pointer" th:data-link="@{|/board/modify/${articleVO.articleId}|}">수정</li>
+                            <li id="article-delete" class="pointer" th:data-link="@{|/board/delete/${articleVO.articleId}|}">삭제</li>
                         </ul>
                     </div>
                 </div>
@@ -206,8 +206,8 @@
                 </div>
             </div>
             <div id="" class="flex-row flex-end article-btn-group">
-                <a href="" class="btn-green">답글 작성</a>
-                <a href="" class="btn-white">목록</a>
+                <a th:href="@{/board/write(upperArticleId=${articleVO.articleId})}"class="btn-green">답글 작성</a>
+                <a href="/board" class="btn-white">목록</a>
             </div>
         </div>
     </div>
