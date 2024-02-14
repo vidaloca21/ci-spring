@@ -1,7 +1,6 @@
 package com.cafe.bbs.app.reply.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -35,8 +34,13 @@ public class ReplyDAOImpl extends SqlSessionDaoSupport implements ReplyDAO {
 	}
 	
 	@Override
-	public int deleteOneReplyByReplyId(String replyId) {
-		return getSqlSession().update("deleteOneReplyByReplyId", replyId);
+	public int modifyOneReply(ReplyVO replyVO) {
+		return getSqlSession().update("modifyOneReply", replyVO);
+	}
+	
+	@Override
+	public int deleteOneReply(ReplyVO replyVO) {
+		return getSqlSession().update("deleteOneReply", replyVO);
 	}
 
 

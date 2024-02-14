@@ -114,6 +114,9 @@ h5 {
 .hidden {
 	display: none;
 }
+.pointer {
+	cursor: pointer;
+}
 /* .btn-green:hover {
     color: #FAFAFA !important;
 }

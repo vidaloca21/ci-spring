@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
@@ -37,16 +36,17 @@ public class ReplyController {
 		boolean isSuccess = replyService.createNewReply(replyVO);
 		return "redirect:/board/" +articleId;
 	}
+	@PostMapping("/modify")
+	public String modifyOneReply(@ModelAttribute ReplyVO replyVO) {
+		String articleId = replyVO.getArticleId();
+		boolean isSuccess = replyService.modifyOneReply(replyVO);
+		return "redirect:/board/" +articleId;
+	}
 	
-	@GetMapping("")
-	public String deleteOneReplyByReplyId(@RequestParam("action") String action,
-										  @RequestParam("replyId") String replyId,
-										  @RequestParam("articleId") String articleId) {
-		if (action.equals("delete")) {
-			boolean isSuccess = replyService.deleteOneReplyByReplyId(replyId);
-		} else if (action.equals("modify")) {
-			
-		}
+	@GetMapping("/delete")
+	public String deleteOneReply(@ModelAttribute ReplyVO replyVO) {
+		boolean isSuccess = replyService.deleteOneReply(replyVO);
+		String articleId = replyVO.getArticleId();
 		return "redirect:/board/" +articleId;
 	}
 	

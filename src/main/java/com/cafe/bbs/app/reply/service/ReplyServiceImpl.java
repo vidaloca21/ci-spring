@@ -1,7 +1,6 @@
 package com.cafe.bbs.app.reply.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,13 @@ public class ReplyServiceImpl implements ReplyService {
 	
 	@Transactional
 	@Override
-	public boolean deleteOneReplyByReplyId(String replyId) {
-		return replyDAO.deleteOneReplyByReplyId(replyId) >0;
+	public boolean modifyOneReply(ReplyVO replyVO) {
+		return replyDAO.modifyOneReply(replyVO) >0;
+	}
+	
+	@Transactional
+	@Override
+	public boolean deleteOneReply(ReplyVO replyVO) {
+		return replyDAO.deleteOneReply(replyVO) >0;
 	}
 }

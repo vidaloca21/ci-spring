@@ -49,11 +49,20 @@
 			 , SYSDATE )
 	</insert>
 	
-	<update id="deleteOneReplyByReplyId"
-			parameterType="string">
+	<update id="modifyOneReply"
+			parameterType="com.cafe.bbs.app.reply.vo.ReplyVO">
+		UPDATE REPLY
+		   SET MEMBER_NAME = #{memberName}
+			 , REPLY_CONTENT = #{replyContent}
+			 , REPLY_MODIFY_DATE = SYSDATE
+		 WHERE REPLY_ID = #{replyId}
+	</update>
+	
+	<update id="deleteOneReply"
+			parameterType="com.cafe.bbs.app.reply.vo.ReplyVO">
 		UPDATE REPLY
 		   SET REPLY_DELETE_DATE = SYSDATE
-		 WHERE REPLY_ID = #{_parameter}
+		 WHERE REPLY_ID = #{replyId}
 	</update>
 	
 </mapper>
