@@ -59,16 +59,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="articleVO : ${articleList}" th:classappend="${articleVO.upperArticleId != null} ? 'level-1' : ''">
+                    <tr th:each="articleVO : ${articleList}" 
+                    	th:classappend="${articleVO.level} > 2 ? 'level-3' : 'level-'+${articleVO.level}">
                         <td th:text="${articleVOStat.count}"></td>
-                        <td>
+                        <td class="title-area">
+							<th:block th:if="${articleVO.level} > 1">
+								<i class="fa-solid fa-l upper-icon"></i>
+							</th:block>
 							<a th:href="@{|/board/${articleVO.articleId}|}" th:text="${articleVO.articleTitle}"></a>
 							<span class="reply-cnt" th:text="|[${replyCnt[articleVO.articleId]}]|"></span>
 						</td>
                         <td th:text="${articleVO.memberName}"></td>
                         <td th:text="${articleVO.articleCreateDate}"></td>
                         <td th:text="${articleVO.viewCnt}"></td>
-                        <td></td>
+                        <td th:text="${articleVO.level}"></td>
                     </tr>
                 </tbody>
             </table>

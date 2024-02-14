@@ -38,6 +38,9 @@
         height: 28px;
         overflow: hidden;
     }
+    td.title-area {
+		text-align: left;
+	}
     th {
         background-color: #B8D8D8;
     }
@@ -68,4 +71,21 @@
 .reply-cnt {
     margin-left: 7px;
     color: #FE5F55;
+}
+.level-1 {
+	>td.title-area {
+	    padding-left: 20px;
+	}
+}
+tr.level-2 {
+    background-color: #b8d8d840 ;
+	>td.title-area {
+	    padding-left: 40px;
+	}
+}
+.level-3 {
+    background-color: #b8d8d870 ;
+    >td.title-area {
+	    padding-left: 60px;
+	}
 }
