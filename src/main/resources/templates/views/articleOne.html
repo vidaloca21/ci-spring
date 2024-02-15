@@ -11,6 +11,7 @@
     <script th:inline="javascript">
 		$().ready(function() {
             const articleId = [[${articleVO.articleId}]]
+            const boardUrl = [[${boardVO.boardUrl}]]
 			$("#modal-wrapper").click(function() {
 			})
             $(".close").click(function() {
@@ -20,7 +21,7 @@
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
                     let mdfyForm = $('<form></form>')
-                    mdfyForm.attr("action", "/modify")
+                    mdfyForm.attr("action", "modify")
                     mdfyForm.attr("method", "post")
                     let articleIdDom = $('<input type="hidden"/>')
                     articleIdDom.attr("name", "articleId")
@@ -38,7 +39,7 @@
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
                     let deleteForm = $('<form></form>')
-                    deleteForm.attr("action", "/delete")
+                    deleteForm.attr("action", "delete")
                     deleteForm.attr("method", "post")
                     let articleIdDom = $('<input type="hidden"/>')
                     articleIdDom.attr("name", "articleId")
@@ -62,7 +63,7 @@
                         if (confirm("댓글을 삭제합니다")) {
                             let deleteForm = $('<form></form>')
                             deleteForm.attr("action", "/reply/delete")
-                            deleteForm.attr("method", "get")
+                            deleteForm.attr("method", "post")
                             let replyIdDom = $('<input type="text"/>')
                             replyIdDom.attr("name", "replyId")
                             replyIdDom.val(replyId)
@@ -115,16 +116,7 @@
 	</script>
 </head>
 <body>
-    <div class="navbar-wrapper flex-row">
-        <div class="navbar-title flex-row">
-            <span><a href="/">게시판</a></span>
-            <div class="navbar-category flex-row">
-                <a href="/board" class="activated">자유게시판</a>
-                <a href="/notice">공지사항</a>
-                <a href="/shop">Shop</a>
-            </div>
-        </div>
-    </div>
+	<div th:replace="~{./boardNav :: gnv}"></div>
     <div id="container">
         <div id="article-wrapper">
             <div id="article">
@@ -199,17 +191,17 @@
             </div>
             <div id="" class="flex-col flex-start article-link-group">
                 <div>
-                    <span>이전</span>
-                    <a th:href="@{|/view/${nextArticle.prevArticleId}|}" th:text="${nextArticle.prevArticleTitle}" class="font-bold">이전 글의 제목입니다</a>
+                    <span>다음</span>
+                    <a th:href="@{|/${boardVO.boardUrl}/view?articleId=${nextArticle.nextArticleId}|}" th:text="${nextArticle.nextArticleTitle}" class="font-bold">다음 글의 제목입니다</a>
                 </div>
                 <div>
-                    <span>다음</span>
-                    <a th:href="@{|/view/${nextArticle.nextArticleId}|}" th:text="${nextArticle.nextArticleTitle}" class="font-bold">다음 글의 제목입니다</a>
+                    <span>이전</span>
+                    <a th:href="@{|/${boardVO.boardUrl}/view?articleId=${nextArticle.prevArticleId}|}" th:text="${nextArticle.prevArticleTitle}" class="font-bold">이전 글의 제목입니다</a>
                 </div>
             </div>
             <div id="" class="flex-row flex-end article-btn-group">
                 <a th:href="@{/write(boardId=${articleVO.boardId},upperArticleId=${articleVO.articleId})}" class="btn-green">답글 작성</a>
-                <a href="/board" class="btn-white">목록</a>
+                <a th:href="@{|/${boardVO.boardUrl}|}" class="btn-white">목록</a>
             </div>
         </div>
     </div>

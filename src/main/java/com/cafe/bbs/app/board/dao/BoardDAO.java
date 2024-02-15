@@ -9,5 +9,6 @@ public interface BoardDAO {
 	public List<BoardVO> getAllBoardList();
 	public String getBoardId(String boardUrl);
 	public String getBoardUrl(String boardId);
+	public BoardVO getBoardVO(String boardUrl);
 
 }

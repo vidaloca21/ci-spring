@@ -13,12 +13,12 @@
 		</association>
 	</resultMap>
 	
-	
 	<select id="searchArticle"
 			parameterType="com.cafe.bbs.app.article.vo.SearchArticleVO"
 			resultMap="articleVOMap">
 		<include refid="common.pagination_header" />
 		SELECT A.ARTICLE_ID
+			 , SUBSTR(A.ARTICLE_ID, -6) AS ARTICLE_NUM
 			 , A.UPPER_ARTICLE_ID
 			 , A.ARTICLE_TITLE
 			 , A.ARTICLE_CONTENT

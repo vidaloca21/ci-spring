@@ -33,4 +33,9 @@ public class BoardDAOImpl extends SqlSessionDaoSupport implements BoardDAO {
 	public String getBoardUrl(String boardId) {
 		return getSqlSession().selectOne("getBoardUrl", boardId);
 	}
+	
+	@Override
+	public BoardVO getBoardVO(String boardUrl) {
+		return getSqlSession().selectOne("getBoardVO", boardUrl);
+	}
 }

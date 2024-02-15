@@ -28,4 +28,9 @@ public class BoardServiceImpl implements BoardService {
 	public String getBoardUrl(String boardId) {
 		return boardDAO.getBoardUrl(boardId);
 	}
+	
+	@Override
+	public BoardVO getBoardVO(String boardUrl) {
+		return boardDAO.getBoardVO(boardUrl);
+	}
 }

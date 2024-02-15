@@ -13,6 +13,7 @@ public class ArticleVO extends ArticleMasterVO {
 	private int level;
 	private int replyCnt;
 	private int fileCnt;
+	private String articleNum;
 	
 	public ArticleMasterVO getArticleMasterVO() {
 		return articleMasterVO;
@@ -80,6 +81,11 @@ public class ArticleVO extends ArticleMasterVO {
 	public void setFileCnt(int fileCnt) {
 		this.fileCnt = fileCnt;
 	}
-	
+	public String getArticleNum() {
+		return articleNum;
+	}
+	public void setArticleNum(String articleNum) {
+		this.articleNum = articleNum;
+	}
 
 }

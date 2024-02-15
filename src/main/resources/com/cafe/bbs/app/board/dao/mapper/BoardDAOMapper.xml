@@ -25,4 +25,21 @@
 		 WHERE BOARD_ID = #{_parameter}
 	</select>
 	
+	<select id="getBoardVO"
+			parameterType="string"
+			resultType="com.cafe.bbs.app.board.vo.BoardVO">
+		SELECT BOARD_ID
+			 , BOARD_NAME
+			 , BOARD_URL
+		  FROM BOARD
+		 WHERE 1=1
+<!--		 <choose>
+			<when test='boardId != null and boardId != ""'>
+			   AND BOARD_ID = #{boardId}
+			</when>
+			<when test='boardName != null and boardName != ""'>-->
+			   AND BOARD_URL = #{_parameter}
+<!--			</when>
+		 </choose>-->
+	</select>
 </mapper>

@@ -9,32 +9,15 @@
     <link rel="stylesheet" href="/css/articleWrite.css">
 </head>
 <body>
-    <div class="navbar-wrapper flex-row">
-        <div class="navbar-title flex-row">
-            <span><a href="/">게시판</a></span>
-            <div class="navbar-category flex-row">
-                <a href="/board" class="activated">자유게시판</a>
-                <a href="/notice">공지사항</a>
-                <a href="/shop">Shop</a>
-            </div>
-             <!-- <ul class="flex-row">
-                <li>로그인</li>
-                <li>회원가입</li>
-            </ul>
-            <ul class="flex-row">
-                <li>닉네임</li>
-                <li>로그아웃</li>
-            </ul> -->
-        </div>
-    </div>
+    <div th:replace="~{./boardNav :: gnv}"></div>
     <div id="container">
         <div id="article-write">
             <h3>게시글 작성</h3>
             <th:block th:if="${upperArticleVO != null}">
             	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
             </th:block>
-            <form th:action="@{/write}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
-				<input type="hidden" name="boardId" th:value="${boardId}" />
+            <form th:action="@{write.do}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="boardId" th:value="${boardVO.boardId}" />
 				<th:block th:if="${upperArticleVO != null}">
 					<input type="hidden" name="upperArticleId" th:value="${upperArticleVO.articleId}">
 				</th:block>
@@ -52,7 +35,7 @@
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>
-            <button type="button" class="btn-white" onclick="location.href='/board'">목록으로 돌아가기</button>
+            <button type="button" class="btn-white" th:onclick="|location.href='@{|/${boardVO.boardUrl}|}'|">목록으로 돌아가기</button>
         </div>
     </div>
 </body>

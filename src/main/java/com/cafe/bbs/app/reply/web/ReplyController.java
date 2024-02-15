@@ -51,7 +51,7 @@ public class ReplyController {
 		}
 	}
 	
-	@GetMapping("/delete")
+	@PostMapping("/delete")
 	public String deleteOneReply(@ModelAttribute ReplyVO replyVO) {
 		boolean isSuccess = replyService.deleteOneReply(replyVO);
 		String articleId = replyVO.getArticleId();

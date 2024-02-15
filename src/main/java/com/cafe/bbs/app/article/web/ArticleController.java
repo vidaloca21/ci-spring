@@ -19,6 +19,7 @@ import com.cafe.bbs.app.article.vo.SearchArticleVO;
 import com.cafe.bbs.app.attachment.service.AttachmentService;
 import com.cafe.bbs.app.attachment.vo.AttachmentVO;
 import com.cafe.bbs.app.board.service.BoardService;
+import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
 
@@ -38,7 +39,7 @@ public class ArticleController {
 	
 	@GetMapping("")
 	public String getStart() {
-		return "redirect:/board";
+		return "intro";
 	}
 	
 	@GetMapping("/{boardUrl}")
@@ -50,17 +51,23 @@ public class ArticleController {
 			searchArticleVO.setBoardId(boardId);
 		}
 		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
+		BoardVO boardVO = boardService.getBoardVO(boardUrl);
+		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
 		return "articleList";
 	}
 	
-	@GetMapping("/view/{articleId}")
-	public String getOneArticle(@PathVariable("articleId") String articleId, Model model) {
+	@GetMapping("/{boardUrl}/view")
+	public String getOneArticle(@PathVariable("boardUrl") String boardUrl
+			  				  , @RequestParam("articleId") String articleId
+			  				  , Model model) {
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
 		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 		NextArticleVO nextArticle = articleService.getBesideArticle(article);
+		BoardVO boardVO = boardService.getBoardVO(boardUrl);
+		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleVO", article);
 		model.addAttribute("replyList", replyList);
 		model.addAttribute("fileList", fileList);
@@ -68,36 +75,41 @@ public class ArticleController {
 		return "articleOne";
 	}
 
-	@GetMapping("/write")
-	public String createNewArticle(@RequestParam(name = "boardId", required = true) String boardId
+	@GetMapping("/{boardUrl}/write")
+	public String createNewArticle(@PathVariable("boardUrl") String boardUrl
 								 , @RequestParam(name = "upperArticleId", required = false) String upperArticleId
 								 , Model model) {
 		if (upperArticleId != "") {
 			ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(upperArticleId);
 			model.addAttribute("upperArticleVO", upperArticleVO);
 		}
-		model.addAttribute("boardId", boardId);
+		BoardVO boardVO = boardService.getBoardVO(boardUrl);
+		model.addAttribute("boardVO", boardVO);
 		return "articleWrite";
 	}
 	
-	@PostMapping("/write")
-	public String createNewArticle(@ModelAttribute ArticleVO articleVO
+	@PostMapping("/{boardUrl}/write.do")
+	public String createNewArticle(@PathVariable("boardUrl") String boardUrl
+			 					 , @ModelAttribute ArticleVO articleVO
 								 , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles) {
 		boolean isSuccess = articleService.createNewArticle(articleVO, attachFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
-			return "redirect:/view/" +articleId;
+			return "redirect:view?articleId="+articleId;
 		}
 		return "articleWrite";
 	}
 	
-	@PostMapping("/modify")
-	public String modifyArticle(@ModelAttribute ArticleVO articleVO, Model model) {
+	@PostMapping("/{boardUrl}/modify")
+	public String modifyArticle(@PathVariable("boardUrl") String boardUrl
+			 				  , @ModelAttribute ArticleVO articleVO, Model model) {
 		boolean isConfirmed = articleService.confirmPassword(articleVO);
 		String articleId = articleVO.getArticleId();
 		if (isConfirmed) {
 			ArticleVO article = articleService.getOneArticleByArticleId(articleId);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
+			BoardVO boardVO = boardService.getBoardVO(boardUrl);
+			model.addAttribute("boardVO", boardVO);
 			model.addAttribute(article);
 			model.addAttribute("fileList", fileList);
 			if (article.getUpperArticleId() != null) {
@@ -110,27 +122,26 @@ public class ArticleController {
 		}
 	}
 	
-	@PostMapping("/modify.do")
-	public String modifyArticle(@ModelAttribute ArticleVO articleVO
+	@PostMapping("/{boardUrl}/modify.do")
+	public String modifyArticle(@PathVariable("boardUrl") String boardUrl
+			  				  , @ModelAttribute ArticleVO articleVO
 			 				  , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles
 			 				  , @RequestParam(name = "deleteFiles", required = false) List<String> deleteFiles) {
 		boolean isSuccess = articleService.modifyArticle(articleVO, attachFiles, deleteFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
-			return "redirect:/view/" +articleId;
+			return "redirect:view?articleId="+articleId;
 		}
 		return "articleMdfy";
 	}
 	
 
-	@PostMapping("/delete")
-	public String deleteOneArticle(@ModelAttribute ArticleVO articleVO) {
+	@PostMapping("/{boardUrl}/delete")
+	public String deleteOneArticle(@PathVariable("boardUrl") String boardUrl
+			  					 , @ModelAttribute ArticleVO articleVO) {
 		boolean isConfirmed = articleService.confirmPassword(articleVO);
-		String articleId = articleVO.getArticleId();
 		if (isConfirmed) {
-			ArticleVO article = articleService.getOneArticleByArticleId(articleId);
-			String boardUrl = boardService.getBoardUrl(article.getBoardId());
-			boolean isSuccess = articleService.deleteOneArticle(articleId);
+			boolean isSuccess = articleService.deleteOneArticle(articleVO.getArticleId());
 			if (isSuccess) {
 				return "redirect:/" +boardUrl;
 			} else {

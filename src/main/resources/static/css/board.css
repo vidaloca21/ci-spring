@@ -58,6 +58,9 @@
     th:nth-child(6) {
         width: 7%;
     }
+    .article-num {
+		font-size: 11px;
+	}
 }
 #page-area {
     justify-content: center;

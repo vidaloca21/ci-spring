@@ -21,23 +21,14 @@
     </script>
 </head>
 <body>
-    <div class="navbar-wrapper flex-row">
-        <div class="navbar-title flex-row">
-            <span><a href="/">게시판</a></span>
-            <div class="navbar-category flex-row">
-                <a href="/board" class="activated">자유게시판</a>
-                <a href="/notice">공지사항</a>
-                <a href="/shop">Shop</a>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{./boardNav :: gnv}"></div>
     <div id="container">
         <div id="article-write">
             <h3>게시글 수정</h3>
             <th:block th:if="${upperArticleVO != null}">
             	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
             </th:block>
-            <form action="/modify.do" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+            <form th:action="@{modify.do}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="articleId" th:value="${articleVO.articleId}" >
 				<div class="flex-col">
 	                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}">
@@ -60,7 +51,7 @@
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>
-            <button type="button" class="btn-white" onclick="location.href='/board'">목록으로 돌아가기</button>
+            <button type="button" class="btn-white" th:onclick="|location.href='@{|/${boardVO.boardUrl}|}'|">목록으로 돌아가기</button>
         </div>
     </div>
 </body>

@@ -1,29 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판</title>
-    <script src="https://kit.fontawesome.com/63879a02ce.js" crossorigin="anonymous"></script>
-    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/common.css">
-</head>
-<body>
-<div class="navbar-wrapper flex-row">
+<div th:fragment="gnv" class="navbar-wrapper flex-row">
     <div class="navbar-title flex-row">
-        <span>게시판</span>
+        <span><a href="/">게시판</a></span>
         <div class="navbar-category flex-row">
-            <a href="" class="activated">게시판A</a>
-            <a href="">게시판B</a>
-            <a href="">게시판C</a>
+            <a href="/board" th:classappend="${boardVO.boardUrl} == 'board' ? 'active' : ''">자유게시판</a>
+            <a href="/notice" th:classappend="${boardVO.boardName} == 'notice' ? 'active' : ''">공지사항</a>
+            <a href="/shop" th:classappend="${boardVO.boardName} == 'shop' ? 'active' : ''">Shop</a>
         </div>
-        <!-- <ul class="flex-row">
-            <li>로그인</li>
-            <li>회원가입</li>
-        </ul> -->
-        <!-- <ul id="navbar-userinfo" class="flex-row">
-            <li>닉네임</li>
-            <li>로그아웃</li>
-        </ul> -->
+        
     </div>
+        <div>
+			<span th:text="${boardVO.boardId}"></span>
+			<span th:text="${boardVO.boardName}"></span>
+			<span th:text="${boardVO.boardUrl}"></span>
+		</div>
 </div>
