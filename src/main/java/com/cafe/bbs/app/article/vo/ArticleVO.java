@@ -11,6 +11,8 @@ public class ArticleVO extends ArticleMasterVO {
 	private String articleSalt;
 	private int viewCnt;
 	private int level;
+	private int replyCnt;
+	private int fileCnt;
 	
 	public ArticleMasterVO getArticleMasterVO() {
 		return articleMasterVO;
@@ -66,5 +68,18 @@ public class ArticleVO extends ArticleMasterVO {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+	public int getReplyCnt() {
+		return replyCnt;
+	}
+	public void setReplyCnt(int replyCnt) {
+		this.replyCnt = replyCnt;
+	}
+	public int getFileCnt() {
+		return fileCnt;
+	}
+	public void setFileCnt(int fileCnt) {
+		this.fileCnt = fileCnt;
+	}
+	
 
 }

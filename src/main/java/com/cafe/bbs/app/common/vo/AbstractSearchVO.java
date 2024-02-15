@@ -2,7 +2,6 @@ package com.cafe.bbs.app.common.vo;
 
 public abstract class AbstractSearchVO {
 	
-
 	private int pageNo;
 	private int listSize;
 	private int pageCount;

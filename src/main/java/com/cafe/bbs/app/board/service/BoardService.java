@@ -7,4 +7,6 @@ import com.cafe.bbs.app.board.vo.BoardVO;
 public interface BoardService {
 
 	public List<BoardVO> getAllBoardList();
+	public String getBoardId(String boardUrl);
+	public String getBoardUrl(String boardId);
 }

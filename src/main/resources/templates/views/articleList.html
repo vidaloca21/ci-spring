@@ -20,32 +20,25 @@
                 <a href="/notice">공지사항</a>
                 <a href="/shop">Shop</a>
             </div>
-            <!-- <ul class="flex-row">
-                <li>로그인</li>
-                <li>회원가입</li>
-            </ul> -->
-            <!-- <ul id="navbar-userinfo" class="flex-row">
-                <li>닉네임</li>
-                <li>로그아웃</li>
-            </ul> -->
         </div>
     </div>
     <div id="container">
         <div id="board-wrapper">
             <div id="board-top">
                 <div id="search-area">
-                    <form id="search-form" th:action="@{/board}" th:object="${searchArticleVO}" method="get">
+                    <form id="search-form" th:action="@{/}" th:object="${searchArticleVO}" method="get">
                         <select name="searchType" id="">
                             <option value="title">제목</option>
                             <option value="content">내용</option>
                             <option value="writer">작성자</option>
                         </select>
                         <input type="text" name="keyword" id="keyword">
+                        <input type="hidden" name="boardId" th:value="${searchArticleVO.boardId}">
                         <input type="hidden" id="pageNo" name="pageNo" />
                         <input type="submit" id="search-btn" class="btn-green" value="검색">
                     </form>
                 </div>
-                <a href="/board/write" id="article-write" class="btn-white">글쓰기</a>
+                <a th:href="@{/write(boardId=${searchArticleVO.boardId})}" id="article-write" class="btn-white">글쓰기</a>
             </div>
             <table id="board">
                 <thead>
@@ -66,16 +59,15 @@
 							<th:block th:if="${articleVO.level} > 1">
 								<i class="fa-solid fa-l upper-icon"></i>
 							</th:block>
-							<a th:href="@{|/board/${articleVO.articleId}|}" th:text="${articleVO.articleTitle}"></a>
-							<span class="reply-cnt" th:text="|[${replyCnt[articleVO.articleId]}]|"></span>
+							<a th:href="@{|/view/${articleVO.articleId}|}" th:text="${articleVO.articleTitle}"></a>
+							<span class="reply-cnt" th:text="|[${articleVO.replyCnt}]|"></span>
 						</td>
                         <td th:text="${articleVO.memberName}"></td>
                         <td th:text="${articleVO.articleCreateDate}"></td>
                         <td th:text="${articleVO.viewCnt}"></td>
-                        <td th:if="${hasFile[articleVO.articleId]}">
-							<i class="fa-solid fa-paperclip"></i>
+                        <td>
+							<i th:if="${articleVO.fileCnt} >0" class="fa-solid fa-paperclip"></i>
 						</td>
-                        <td th:unless="${hasFile[articleVO.articleId]}"></td>
                     </tr>
                 </tbody>
             </table>

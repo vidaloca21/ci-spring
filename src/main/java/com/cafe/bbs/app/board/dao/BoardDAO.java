@@ -7,5 +7,7 @@ import com.cafe.bbs.app.board.vo.BoardVO;
 public interface BoardDAO {
 	
 	public List<BoardVO> getAllBoardList();
+	public String getBoardId(String boardUrl);
+	public String getBoardUrl(String boardId);
 
 }

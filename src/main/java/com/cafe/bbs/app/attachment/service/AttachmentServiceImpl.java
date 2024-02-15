@@ -23,7 +23,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 		return attachmentDAO.getOneAttachment(attachmentId);
 	}
 	@Override
-	public boolean hasFile(String articleId) {
-		return attachmentDAO.getAllFilesByArticleId(articleId).size() >0;
+	public boolean deleteAttachmentVO(String attachmentId) {
+		return attachmentDAO.deleteAttachmentVO(attachmentId) >0;
 	}
 }

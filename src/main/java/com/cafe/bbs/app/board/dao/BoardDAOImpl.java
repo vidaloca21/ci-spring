@@ -23,4 +23,14 @@ public class BoardDAOImpl extends SqlSessionDaoSupport implements BoardDAO {
 	public List<BoardVO> getAllBoardList() {
 		return getSqlSession().selectList("getAllBoardList");
 	}
+	
+	@Override
+	public String getBoardId(String boardUrl) {
+		return getSqlSession().selectOne("getBoardId", boardUrl);
+	}
+	
+	@Override
+	public String getBoardUrl(String boardId) {
+		return getSqlSession().selectOne("getBoardUrl", boardId);
+	}
 }

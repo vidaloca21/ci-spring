@@ -7,26 +7,28 @@
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/articleWrite.css">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="./articleWrite.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $().ready(function() {
+            $(".file-check").change(function() {
+                if ($(this).is(':checked')) {
+                    $(this).parent().addClass("deleted")
+                } else {
+                    $(this).parent().removeClass("deleted")
+                }
+            })
+        })
+    </script>
 </head>
 <body>
     <div class="navbar-wrapper flex-row">
         <div class="navbar-title flex-row">
-            <span>게시판</span>
+            <span><a href="/">게시판</a></span>
             <div class="navbar-category flex-row">
                 <a href="/board" class="activated">자유게시판</a>
                 <a href="/notice">공지사항</a>
                 <a href="/shop">Shop</a>
             </div>
-             <!-- <ul class="flex-row">
-                <li>로그인</li>
-                <li>회원가입</li>
-            </ul>
-            <ul class="flex-row">
-                <li>닉네임</li>
-                <li>로그아웃</li>
-            </ul> -->
         </div>
     </div>
     <div id="container">
@@ -35,7 +37,7 @@
             <th:block th:if="${upperArticleVO != null}">
             	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
             </th:block>
-            <form action="/board/modify" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+            <form action="/modify.do" th:object="${articleVO}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="articleId" th:value="${articleVO.articleId}" >
 				<div class="flex-col">
 	                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}">
@@ -46,10 +48,13 @@
     	                <h5>첨부파일</h5>
 		                <th:block th:if="${!fileList.empty}">
 	                        <ul class="flex-row" th:each="file : ${fileList}" >
-	                            <li><a th:href="@{|/file/download/${file.attachmentId}|}" th:text="${file.originFilename}"></a></li>
+	                            <li>
+									<input type="checkbox" class="file-check" name="deleteFiles" th:value="${file.attachmentId}"/>
+									<a th:href="@{|/file/download/${file.attachmentId}|}" th:text="${file.originFilename}"></a>
+								</li>
 	                        </ul>
 		                </th:block>
-		                <input type="file" name="attachFiles" id="article-flie" multiple>
+		                <input type="file" name="attachFiles" id="input-flie" multiple>
                     </div>
 	                
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">

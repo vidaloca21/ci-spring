@@ -116,6 +116,9 @@ h5 {
 .upper-icon {
 	color: inherit;
 }
+.deleted {
+    text-decoration: line-through;
+}
 /* .btn-green:hover {
     color: #FAFAFA !important;
 }

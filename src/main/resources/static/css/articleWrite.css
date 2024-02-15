@@ -44,8 +44,18 @@
     padding: 12px;
     min-height: 300px;
 }
-#article-flie {
+#article-file {
     margin-top: 15px;
+    > h5 {
+		margin-bottom: 5px;
+	}
+	>ul > li {
+		display: flex;
+		align-items: center;
+	}
+    > input {
+		padding: 7px 5px;
+	}
 }
 #article-submit {
     margin-top: 20px;

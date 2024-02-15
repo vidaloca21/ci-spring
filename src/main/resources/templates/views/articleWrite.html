@@ -11,7 +11,7 @@
 <body>
     <div class="navbar-wrapper flex-row">
         <div class="navbar-title flex-row">
-            <span>게시판</span>
+            <span><a href="/">게시판</a></span>
             <div class="navbar-category flex-row">
                 <a href="/board" class="activated">자유게시판</a>
                 <a href="/notice">공지사항</a>
@@ -33,7 +33,8 @@
             <th:block th:if="${upperArticleVO != null}">
             	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
             </th:block>
-            <form th:action="@{/board/write}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/write}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="boardId" th:value="${boardId}" />
 				<th:block th:if="${upperArticleVO != null}">
 					<input type="hidden" name="upperArticleId" th:value="${upperArticleVO.articleId}">
 				</th:block>
@@ -44,7 +45,10 @@
                     </div>
 	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요">
 	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"></textarea>
-	                <input type="file" name="attachFiles" id="article-flie" multiple>
+                    <div id="article-file">
+    	                <h5>첨부파일</h5>
+		                <input type="file" name="attachFiles" id="input-flie" multiple>
+                    </div>
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>

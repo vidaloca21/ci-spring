@@ -7,7 +7,22 @@
 			resultType="com.cafe.bbs.app.board.vo.BoardVO">
 		SELECT BOARD_ID
 			 , BOARD_NAME
+			 , BOARD_URL
 		  FROM BOARD
+	</select>
+	
+	<select id="getBoardId"
+			resultType="string">
+		SELECT BOARD_ID
+		  FROM BOARD
+		 WHERE BOARD_URL = #{_parameter}
+	</select>
+
+	<select id="getBoardUrl"
+			resultType="string">
+		SELECT BOARD_URL
+		  FROM BOARD
+		 WHERE BOARD_ID = #{_parameter}
 	</select>
 	
 </mapper>

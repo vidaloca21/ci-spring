@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.cafe.bbs.app.article.vo.ArticleVO;
+import com.cafe.bbs.app.article.vo.NextArticleVO;
 import com.cafe.bbs.app.article.vo.SearchArticleVO;
 
 @Repository
@@ -30,8 +31,8 @@ public class ArticleDAOImpl extends SqlSessionDaoSupport implements ArticleDAO{
 	}
 	
 	@Override
-	public int getAllArticleCount() {
-		return getSqlSession().selectOne("getAllArticleCount");
+	public int getArticleCount(SearchArticleVO searchArticleVO) {
+		return getSqlSession().selectOne("getArticleCount", searchArticleVO);
 	}
 
 	@Override
@@ -71,5 +72,10 @@ public class ArticleDAOImpl extends SqlSessionDaoSupport implements ArticleDAO{
 	@Override
 	public ArticleVO getArticlePassword(String articleId) {
 		return getSqlSession().selectOne("getArticlePassword", articleId);
+	}
+	
+	@Override
+	public NextArticleVO getBesideArticle(ArticleVO articleVO) {
+		return getSqlSession().selectOne("getBesideArticle", articleVO);
 	}
 }

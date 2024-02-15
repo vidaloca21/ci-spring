@@ -13,8 +13,11 @@
 		</association>
 	</resultMap>
 	
-	<select id="getAllArticle" 
+	
+	<select id="searchArticle"
+			parameterType="com.cafe.bbs.app.article.vo.SearchArticleVO"
 			resultMap="articleVOMap">
+		<include refid="common.pagination_header" />
 		SELECT A.ARTICLE_ID
 			 , A.UPPER_ARTICLE_ID
 			 , A.ARTICLE_TITLE
@@ -25,23 +28,52 @@
 			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD') ARTICLE_CREATE_DATE
 			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD') ARTICLE_MODIFY_DATE
 			 , TO_CHAR(AM.ARTICLE_DELETE_DATE, 'YYYY-MM-DD') ARTICLE_DELETE_DATE
-			 , LEVEL LEVEL
+ 			 , LEVEL
 		  FROM ARTICLE A
 		  JOIN ARTICLE_MASTER AM
 		    ON A.ARTICLE_ID = AM.ARTICLE_ID
 		 WHERE 1=1
 		   AND AM.ARTICLE_DELETE_DATE IS NULL
-	     START WITH A.UPPER_ARTICLE_ID IS NULL
+		   AND AM.BOARD_ID = #{boardId}
+		<if test='keyword != null and keyword != ""'>
+			<if test='searchType == "title"'>
+		   AND A.ARTICLE_TITLE LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test='searchType == "content"'>
+		   AND A.ARTICLE_CONTENT LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test='searchType == "writer"'>
+		   AND AM.MEMBER_NAME LIKE '%' || #{keyword} || '%'	
+			</if>
+		</if>
+     	 START WITH A.UPPER_ARTICLE_ID IS NULL
    	   CONNECT BY PRIOR A.ARTICLE_ID = A.UPPER_ARTICLE_ID
    	     ORDER SIBLINGS BY A.ARTICLE_ID DESC
+	    <include refid="common.pagination_footer" />
+	   ORDER BY RNUM
 	</select>
 	
-	<select id="getAllArticleCount" 
+	<select id="getArticleCount"
+			parameterType="com.cafe.bbs.app.article.vo.SearchArticleVO"
 			resultType="_int">
 		SELECT COUNT(1)
-		  FROM ARTICLE_MASTER
+		  FROM ARTICLE_MASTER AM
+		  JOIN ARTICLE A
+		    ON AM.ARTICLE_ID = A.ARTICLE_ID
   		 WHERE 1=1
 		   AND ARTICLE_DELETE_DATE IS NULL
+   		   AND AM.BOARD_ID = #{boardId}
+		<if test='keyword != null and keyword != ""'>
+			<if test='searchType == "title"'>
+		   AND A.ARTICLE_TITLE LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test='searchType == "content"'>
+		   AND A.ARTICLE_CONTENT LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test='searchType == "writer"'>
+		   AND AM.MEMBER_NAME LIKE '%' || #{keyword} || '%'	
+			</if>
+		</if>
 	</select>
 	
 	<select id="getOneArticleByArticleId"
@@ -131,44 +163,6 @@
 		 WHERE ARTICLE_ID = #{_parameter}
 	</update>
 	
-	<select id="searchArticle"
-			parameterType="com.cafe.bbs.app.article.vo.SearchArticleVO"
-			resultMap="articleVOMap">
-		<include refid="common.pagination_header" />
-		SELECT A.ARTICLE_ID
-			 , A.UPPER_ARTICLE_ID
-			 , A.ARTICLE_TITLE
-			 , A.ARTICLE_CONTENT
-			 , A.VIEW_CNT
-			 , AM.BOARD_ID
-			 , AM.MEMBER_NAME
-			 , TO_CHAR(AM.ARTICLE_CREATE_DATE, 'YYYY-MM-DD') ARTICLE_CREATE_DATE
-			 , TO_CHAR(AM.ARTICLE_MODIFY_DATE, 'YYYY-MM-DD') ARTICLE_MODIFY_DATE
-			 , TO_CHAR(AM.ARTICLE_DELETE_DATE, 'YYYY-MM-DD') ARTICLE_DELETE_DATE
- 			 , LEVEL
-		  FROM ARTICLE A
-		  JOIN ARTICLE_MASTER AM
-		    ON A.ARTICLE_ID = AM.ARTICLE_ID
-		 WHERE 1=1
-		   AND AM.ARTICLE_DELETE_DATE IS NULL
-		<if test='keyword != null and keyword != ""'>
-			<if test='searchType == "title"'>
-		   AND A.ARTICLE_TITLE LIKE '%' || #{keyword} || '%'
-			</if>
-			<if test='searchType == "content"'>
-		   AND A.ARTICLE_CONTENT LIKE '%' || #{keyword} || '%'	
-			</if>
-			<if test='searchType == "writer"'>
-		   AND AM.MEMBER_NAME LIKE '%' || #{keyword} || '%'	
-			</if>
-		</if>
-     	 START WITH A.UPPER_ARTICLE_ID IS NULL
-   	   CONNECT BY PRIOR A.ARTICLE_ID = A.UPPER_ARTICLE_ID
-   	     ORDER SIBLINGS BY A.ARTICLE_ID DESC
-	    <include refid="common.pagination_footer" />
-	   ORDER BY RNUM
-	</select>
-	
 	<select id="getArticlePassword"
 			parameterType="string"
 			resultType="com.cafe.bbs.app.article.vo.ArticleVO">
@@ -177,4 +171,23 @@
 		  FROM ARTICLE
 		 WHERE ARTICLE_ID = #{_parameter}
 	</select>
+	
+	<select id="getBesideArticle"
+			parameterType="com.cafe.bbs.app.article.vo.ArticleVO"
+			resultType="com.cafe.bbs.app.article.vo.NextArticleVO">
+		SELECT * 
+		  FROM ( SELECT A.ARTICLE_ID
+	 				  , LAG(A.ARTICLE_ID, 1, '') OVER (ORDER BY A.ARTICLE_ID) AS PREV_ARTICLE_ID
+	 				  , LAG(A.ARTICLE_TITLE, 1, '') OVER (ORDER BY A.ARTICLE_ID) AS PREV_ARTICLE_TITLE
+	 				  , LEAD(A.ARTICLE_ID, 1, '') OVER (ORDER BY A.ARTICLE_ID) AS NEXT_ARTICLE_ID
+	 				  , LEAD(A.ARTICLE_TITLE, 1, '') OVER (ORDER BY A.ARTICLE_ID) AS NEXT_ARTICLE_TITLE
+  				   FROM ARTICLE A
+  				   JOIN ARTICLE_MASTER AM
+    				 ON A.ARTICLE_ID = AM.ARTICLE_ID
+ 				  WHERE 1=1
+   					AND AM.BOARD_ID = #{boardId}
+   					AND AM.ARTICLE_DELETE_DATE IS NULL )
+   		 WHERE ARTICLE_ID = #{articleId}
+	</select>
+	
 </mapper>

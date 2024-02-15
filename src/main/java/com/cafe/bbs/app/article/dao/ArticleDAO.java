@@ -3,13 +3,14 @@ package com.cafe.bbs.app.article.dao;
 import java.util.List;
 
 import com.cafe.bbs.app.article.vo.ArticleVO;
+import com.cafe.bbs.app.article.vo.NextArticleVO;
 import com.cafe.bbs.app.article.vo.SearchArticleVO;
 
 public interface ArticleDAO {
 	
 	public List<ArticleVO> getAllArticle(); 
 	public List<ArticleVO> searchArticle(SearchArticleVO searchArticleVO);
-	public int getAllArticleCount();
+	public int getArticleCount(SearchArticleVO searchArticleVO);
 	public ArticleVO getOneArticleByArticleId(String articleId);
 	public int increaseViewCount(String articleId);
 	
@@ -21,5 +22,5 @@ public interface ArticleDAO {
 	
 	public int deleteOneArticle(String articleId);
 	public ArticleVO getArticlePassword(String articleId);
-	
+	public NextArticleVO getBesideArticle(ArticleVO articleVO);
 }

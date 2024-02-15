@@ -34,20 +34,32 @@ public class ReplyController {
 	public String createNewReply(@ModelAttribute ReplyVO replyVO) {
 		String articleId = replyVO.getArticleId();
 		boolean isSuccess = replyService.createNewReply(replyVO);
-		return "redirect:/board/" +articleId;
+		if (isSuccess) {
+			return "redirect:/view/" +articleId;
+		} else {
+			throw new IllegalArgumentException("작성 실패!");
+		}
 	}
 	@PostMapping("/modify")
 	public String modifyOneReply(@ModelAttribute ReplyVO replyVO) {
 		String articleId = replyVO.getArticleId();
 		boolean isSuccess = replyService.modifyOneReply(replyVO);
-		return "redirect:/board/" +articleId;
+		if (isSuccess) {
+			return "redirect:/view/" +articleId;
+		} else {
+			throw new IllegalArgumentException("수정 실패!");
+		}
 	}
 	
 	@GetMapping("/delete")
 	public String deleteOneReply(@ModelAttribute ReplyVO replyVO) {
 		boolean isSuccess = replyService.deleteOneReply(replyVO);
 		String articleId = replyVO.getArticleId();
-		return "redirect:/board/" +articleId;
+		if (isSuccess) {
+			return "redirect:/view/" +articleId;
+		} else {
+			throw new IllegalArgumentException("삭제 실패!");
+		}
 	}
 	
 }

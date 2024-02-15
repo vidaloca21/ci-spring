@@ -8,6 +8,6 @@ public interface AttachmentService {
 	
 	public List<AttachmentVO> getAllFilesByArticleId(String articleId);
 	public AttachmentVO getOneAttachment(String attachmentId);
-	public boolean hasFile(String articleId);
+	public boolean deleteAttachmentVO(String attachmentId);
 
 }

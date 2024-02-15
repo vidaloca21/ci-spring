@@ -24,6 +24,11 @@ public class AttachmentDAOImpl extends SqlSessionDaoSupport implements Attachmen
 	}
 	
 	@Override
+	public int getFileCntByArticleId(String articleId) {
+		return getSqlSession().selectOne("getFileCntByArticleId", articleId);
+	}
+	
+	@Override
 	public AttachmentVO getOneAttachment(String attachmentId) {
 		return getSqlSession().selectOne("getOneAttachment", attachmentId);
 	}
@@ -31,5 +36,10 @@ public class AttachmentDAOImpl extends SqlSessionDaoSupport implements Attachmen
 	@Override
 	public int storeNewFile(AttachmentVO attachmentVO) {
 		return getSqlSession().insert("storeNewFile", attachmentVO);
+	}
+	
+	@Override
+	public int deleteAttachmentVO(String attachmentId) {
+		return getSqlSession().delete("deleteAttachmentVO", attachmentId);
 	}
 }

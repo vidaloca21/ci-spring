@@ -15,6 +15,14 @@
 		 WHERE ARTICLE_ID = #{_parameter}
 	</select>
 	
+		<select id="getFileCntByArticleId"
+			parameterType="string"
+			resultType="_int">
+		SELECT COUNT(1)
+		  FROM ATTACHMENT
+		 WHERE ARTICLE_ID = #{_parameter}
+	</select>
+	
 	<select id="getOneAttachment"
 			parameterType="string"
 			resultType="com.cafe.bbs.app.attachment.vo.AttachmentVO">
@@ -42,4 +50,10 @@
 			 , #{uuidFilename}
 			 , SYSDATE )
 	</insert>
+	
+	<delete id="deleteAttachmentVO"
+			parameterType="string">
+		DELETE FROM ATTACHMENT
+		 WHERE ATTACHMENT_ID = #{_parameter} 		
+	</delete>
 </mapper>

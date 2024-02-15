@@ -20,8 +20,8 @@
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
                     let mdfyForm = $('<form></form>')
-                    mdfyForm.attr("action", "/board/modify")
-                    mdfyForm.attr("method", "get")
+                    mdfyForm.attr("action", "/modify")
+                    mdfyForm.attr("method", "post")
                     let articleIdDom = $('<input type="hidden"/>')
                     articleIdDom.attr("name", "articleId")
                     articleIdDom.val(articleId);
@@ -38,8 +38,8 @@
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
                     let deleteForm = $('<form></form>')
-                    deleteForm.attr("action", "/board/delete")
-                    deleteForm.attr("method", "get")
+                    deleteForm.attr("action", "/delete")
+                    deleteForm.attr("method", "post")
                     let articleIdDom = $('<input type="hidden"/>')
                     articleIdDom.attr("name", "articleId")
                     articleIdDom.val(articleId);
@@ -117,20 +117,12 @@
 <body>
     <div class="navbar-wrapper flex-row">
         <div class="navbar-title flex-row">
-            <span>게시판</span>
+            <span><a href="/">게시판</a></span>
             <div class="navbar-category flex-row">
                 <a href="/board" class="activated">자유게시판</a>
                 <a href="/notice">공지사항</a>
                 <a href="/shop">Shop</a>
             </div>
-            <!-- <ul class="flex-row">
-                <li>로그인</li>
-                <li>회원가입</li>
-            </ul>
-            <ul class="flex-row">
-                <li>닉네임</li>
-                <li>로그아웃</li>
-            </ul> -->
         </div>
     </div>
     <div id="container">
@@ -149,8 +141,8 @@
                         </ul>
                         <ul class="flex-row add-delete">
                             <input type="hidden" th:value="${articleVO.articlePassword}" id="articlePW">
-                            <li id="article-modify" class="pointer" th:data-link="@{|/board/modify/${articleVO.articleId}|}">수정</li>
-                            <li id="article-delete" class="pointer" th:data-link="@{|/board/delete/${articleVO.articleId}|}">삭제</li>
+                            <li id="article-modify" class="pointer">수정</li>
+                            <li id="article-delete" class="pointer">삭제</li>
                         </ul>
                     </div>
                 </div>
@@ -208,15 +200,15 @@
             <div id="" class="flex-col flex-start article-link-group">
                 <div>
                     <span>이전</span>
-                    <a href="">이전 글의 제목입니다</a>
+                    <a th:href="@{|/view/${nextArticle.prevArticleId}|}" th:text="${nextArticle.prevArticleTitle}" class="font-bold">이전 글의 제목입니다</a>
                 </div>
                 <div>
                     <span>다음</span>
-                    <a href="">다음 글의 제목입니다</a>
+                    <a th:href="@{|/view/${nextArticle.nextArticleId}|}" th:text="${nextArticle.nextArticleTitle}" class="font-bold">다음 글의 제목입니다</a>
                 </div>
             </div>
             <div id="" class="flex-row flex-end article-btn-group">
-                <a th:href="@{/board/write(upperArticleId=${articleVO.articleId})}" class="btn-green">답글 작성</a>
+                <a th:href="@{/write(boardId=${articleVO.boardId},upperArticleId=${articleVO.articleId})}" class="btn-green">답글 작성</a>
                 <a href="/board" class="btn-white">목록</a>
             </div>
         </div>
