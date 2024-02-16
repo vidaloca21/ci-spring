@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
@@ -31,32 +32,33 @@ public class ReplyController {
 	}
 	
 	@PostMapping("/write")
-	public String createNewReply(@ModelAttribute ReplyVO replyVO) {
-		String articleId = replyVO.getArticleId();
+	public String createNewReply(@ModelAttribute ReplyVO replyVO
+			   				   , @RequestParam("currentUrl") String currentUrl) {
 		boolean isSuccess = replyService.createNewReply(replyVO);
 		if (isSuccess) {
-			return "redirect:/view/" +articleId;
+			return "redirect:"+currentUrl;
 		} else {
 			throw new IllegalArgumentException("작성 실패!");
 		}
 	}
 	@PostMapping("/modify")
-	public String modifyOneReply(@ModelAttribute ReplyVO replyVO) {
-		String articleId = replyVO.getArticleId();
+	public String modifyOneReply(@ModelAttribute ReplyVO replyVO
+							   , @RequestParam("currentUrl") String currentUrl) {
 		boolean isSuccess = replyService.modifyOneReply(replyVO);
+		System.out.println(currentUrl);
 		if (isSuccess) {
-			return "redirect:/view/" +articleId;
+			return "redirect:" +currentUrl;
 		} else {
 			throw new IllegalArgumentException("수정 실패!");
 		}
 	}
 	
 	@PostMapping("/delete")
-	public String deleteOneReply(@ModelAttribute ReplyVO replyVO) {
+	public String deleteOneReply(@ModelAttribute ReplyVO replyVO
+			   				   , @RequestParam("currentUrl") String currentUrl) {
 		boolean isSuccess = replyService.deleteOneReply(replyVO);
-		String articleId = replyVO.getArticleId();
 		if (isSuccess) {
-			return "redirect:/view/" +articleId;
+			return "redirect:"+currentUrl;
 		} else {
 			throw new IllegalArgumentException("삭제 실패!");
 		}

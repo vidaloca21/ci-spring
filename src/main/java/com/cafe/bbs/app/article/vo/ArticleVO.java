@@ -1,5 +1,6 @@
 package com.cafe.bbs.app.article.vo;
 
+
 public class ArticleVO extends ArticleMasterVO {
 	
 	private ArticleMasterVO articleMasterVO;

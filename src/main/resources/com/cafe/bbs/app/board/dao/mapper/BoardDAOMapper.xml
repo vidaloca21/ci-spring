@@ -33,13 +33,6 @@
 			 , BOARD_URL
 		  FROM BOARD
 		 WHERE 1=1
-<!--		 <choose>
-			<when test='boardId != null and boardId != ""'>
-			   AND BOARD_ID = #{boardId}
-			</when>
-			<when test='boardName != null and boardName != ""'>-->
-			   AND BOARD_URL = #{_parameter}
-<!--			</when>
-		 </choose>-->
+		   AND BOARD_URL = #{_parameter}
 	</select>
 </mapper>

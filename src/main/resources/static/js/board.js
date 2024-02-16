@@ -5,9 +5,8 @@ $().ready(function() {
 })
 function movePage(pageNo = 0) {
     $("#pageNo").val(pageNo)
-    console.log($("#pageNo").val(pageNo))
     $("#search-form").attr({
         "method": "get",
-        "action": "/board"
+        "action": window.location.pathname
     }).submit()
 }

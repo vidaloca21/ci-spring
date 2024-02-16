@@ -12,6 +12,8 @@
 		$().ready(function() {
             const articleId = [[${articleVO.articleId}]]
             const boardUrl = [[${boardVO.boardUrl}]]
+            const currentUrl = window.location.pathname + window.location.search
+            $("#input-current-url").val(currentUrl)
 			$("#modal-wrapper").click(function() {
 			})
             $(".close").click(function() {
@@ -69,9 +71,12 @@
                             replyIdDom.val(replyId)
                             let articleIdDom = $('<input type="text"/>')
                             articleIdDom.attr("name", "articleId")
-                            articleIdDom.val(articleId);
+                            let urlDom = $('<input type="text"/>')
+                            urlDom.attr("name", "currentUrl")
+                            urlDom.val(currentUrl);
                             deleteForm.append(replyIdDom)
                             deleteForm.append(articleIdDom)
+                            deleteForm.append(urlDom)
                             $("body").append(deleteForm)
                             deleteForm.submit();
                         } else {
@@ -100,6 +105,10 @@
                             replyIdDom.attr("name", "replyId")
                             replyIdDom.val(replyId)
                             $("#modify-form").append(replyIdDom)
+                            let urlDom = $('<input type="hidden"/>')
+                            urlDom.attr("name", "currentUrl")
+                            urlDom.val(currentUrl);
+                            $("#modify-form").append(urlDom)
 					} else {
 						alert("잘못된 비밀번호입니다!")
 						location.reload();
@@ -112,6 +121,7 @@
 	                $("#modify-form").submit()
 				}
             })
+            
 		})
 	</script>
 </head>
@@ -184,6 +194,7 @@
 	                        </div>
 	                        <textarea name="replyContent" id="reply-write" placeholder="댓글 내용"></textarea>
 	                        <input type="hidden" name="articleId" th:value="${articleVO.articleId}">
+	                        <input type="hidden" name="currentUrl" id="input-current-url">
 	                        <input id="reply-submit" class="btn-green" type="submit" value="등록">
 	                    </div>
 	                </form>
@@ -192,15 +203,21 @@
             <div id="" class="flex-col flex-start article-link-group">
                 <div>
                     <span>다음</span>
+                    <th:block th:if="${nextArticle.nextArticleId} == null">
+						<span>게시글이 존재하지 않습니다</span>
+					</th:block>
                     <a th:href="@{|/${boardVO.boardUrl}/view?articleId=${nextArticle.nextArticleId}|}" th:text="${nextArticle.nextArticleTitle}" class="font-bold">다음 글의 제목입니다</a>
                 </div>
                 <div>
                     <span>이전</span>
+                    <th:block th:if="${nextArticle.prevArticleId} == null">
+						<span>게시글이 존재하지 않습니다</span>
+					</th:block>
                     <a th:href="@{|/${boardVO.boardUrl}/view?articleId=${nextArticle.prevArticleId}|}" th:text="${nextArticle.prevArticleTitle}" class="font-bold">이전 글의 제목입니다</a>
                 </div>
             </div>
             <div id="" class="flex-row flex-end article-btn-group">
-                <a th:href="@{/write(boardId=${articleVO.boardId},upperArticleId=${articleVO.articleId})}" class="btn-green">답글 작성</a>
+                <a th:href="@{|/${boardVO.boardUrl}/write?upperArticleId=${articleVO.articleId}|}" class="btn-green">답글 작성</a>
                 <a th:href="@{|/${boardVO.boardUrl}|}" class="btn-white">목록</a>
             </div>
         </div>

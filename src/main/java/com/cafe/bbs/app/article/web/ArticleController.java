@@ -23,7 +23,6 @@ import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
 
-
 @Controller
 public class ArticleController {
 	
@@ -37,21 +36,19 @@ public class ArticleController {
 	private ReplyService replyService;
 	
 	
-	@GetMapping("")
-	public String getStart() {
-		return "intro";
-	}
-	
-	@GetMapping("/{boardUrl}")
-	public String getAricleList(@PathVariable("boardUrl") String boardUrl
+
+	@GetMapping(value = {"", "/", "/{boardUrl}"})
+	public String getArticleList(@PathVariable(name = "boardUrl", required = false) String boardUrl
 							  , @ModelAttribute SearchArticleVO searchArticleVO
 							  , Model model) {
+		if (boardUrl == null) {
+			return "intro";
+		}
+		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		if (searchArticleVO.getBoardId() == null) {
-			String boardId = boardService.getBoardId(boardUrl);
-			searchArticleVO.setBoardId(boardId);
+			searchArticleVO.setBoardId(boardVO.getBoardId());
 		}
 		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
-		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
