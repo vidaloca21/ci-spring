@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,8 @@ import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
 
+import jakarta.validation.Valid;
+
 @Controller
 public class ArticleController {
 	
@@ -39,8 +43,8 @@ public class ArticleController {
 
 	@GetMapping(value = {"", "/", "/{boardUrl}"})
 	public String getArticleList(@PathVariable(name = "boardUrl", required = false) String boardUrl
-							  , @ModelAttribute SearchArticleVO searchArticleVO
-							  , Model model) {
+							   , @ModelAttribute SearchArticleVO searchArticleVO
+							   , Model model) {
 		if (boardUrl == null) {
 			return "intro";
 		}
@@ -82,13 +86,21 @@ public class ArticleController {
 		}
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("articleVO", new ArticleVO());
 		return "articleWrite";
 	}
 	
 	@PostMapping("/{boardUrl}/write.do")
 	public String createNewArticle(@PathVariable("boardUrl") String boardUrl
-			 					 , @ModelAttribute ArticleVO articleVO
+			 					 , @Valid @ModelAttribute ArticleVO articleVO
+			 					 , BindingResult bindingResult
+			 					 , Model model
 								 , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles) {
+		if (bindingResult.hasErrors()) {
+			BoardVO boardVO = boardService.getBoardVO(boardUrl);
+			model.addAttribute("boardVO", boardVO);
+			return "articleWrite";
+		}
 		boolean isSuccess = articleService.createNewArticle(articleVO, attachFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();

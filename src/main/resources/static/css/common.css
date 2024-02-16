@@ -119,6 +119,9 @@ h5 {
 .deleted {
     text-decoration: line-through;
 }
+.field-error {
+	color: #FE5F55;
+}
 /* .btn-green:hover {
     color: #FAFAFA !important;
 }

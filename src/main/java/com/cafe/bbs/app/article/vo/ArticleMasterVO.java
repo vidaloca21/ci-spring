@@ -1,9 +1,14 @@
 package com.cafe.bbs.app.article.vo;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class ArticleMasterVO {
 	
 	private String articleId;
 	private String boardId;
+	@NotEmpty(message = "작성자 이름을 입력하세요")
+	@Size(max = 10, message = "최대 10자까지 입력 가능합니다")
 	private String memberName;
 	private String articleCreateDate;
 	private String articleModifyDate;
