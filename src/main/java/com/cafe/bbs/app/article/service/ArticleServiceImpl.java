@@ -80,6 +80,8 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional
 	@Override
 	public boolean modifyArticle(ArticleVO articleVO, List<MultipartFile> attachFiles, List<String> deleteFiles) {
+		String articlePassword = articleDAO.getArticlePassword(articleVO.getArticleId()).getArticlePassword();
+		articleVO.setArticlePassword(articlePassword);
 		if (deleteFiles != null) {
 			for (String attachmentId: deleteFiles) {
 				AttachmentVO attachmentVO = attachmentDAO.getOneAttachment(attachmentId);

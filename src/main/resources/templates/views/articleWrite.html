@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/translations/ko.js"></script>
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/articleWrite.css">
 </head>
@@ -16,19 +19,26 @@
             <th:block th:if="${upperArticleVO != null}">
             	<p id="upper-article-title">상위 게시글:<span th:text="${upperArticleVO.articleTitle}"></span></p>
             </th:block>
-            <form th:action="@{write.do}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
+            <form th:action="@{write}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="boardId" th:value="${boardVO.boardId}" />
 				<th:block th:if="${upperArticleVO != null}">
 					<input type="hidden" name="upperArticleId" th:value="${upperArticleVO.articleId}">
 				</th:block>
                 <div class="flex-col">
                     <div class="flex-row space-bet">
-                        <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임">
-                        <input type="password" name="articlePassword" id="article-password" placeholder="비밀번호를 입력하세요 (4자리 ~ 12자리)">
+                        <div class="flex-col half">
+                            <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}" th:errorclass="input-error">
+                            <span class="msg-error" th:errors="*{memberName}"></span>
+                        </div>
+                        <div class="flex-col half">
+                            <input type="password" name="articlePassword" id="article-password" th:value="${articleVO.articlePassword}" placeholder="비밀번호를 입력하세요 (4자리 ~ 12자리)" th:errorclass="input-error">
+                            <span class="msg-error" th:errors="*{articlePassword}"></span>
+                        </div>
                     </div>
-	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요"  th:errorclass="field-error">
-	                <span class="field-error" th:errors="*{articleTitle}"></span>
-	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"></textarea>
+	                <input type="text" name="articleTitle" id="article-title" th:value="${articleVO.articleTitle}" placeholder="제목을 입력하세요"  th:errorclass="input-error">
+	                <span class="msg-error" th:errors="*{articleTitle}"></span>
+	                <textarea name="articleContent" id="article-content" th:text="${articleVO.articleContent}" placeholder="본문 내용을 입력하세요" th:errorclass="input-error"></textarea>
+                    <span class="msg-error" th:errors="*{articleContent}"></span>
                     <div id="article-file">
     	                <h5>첨부파일</h5>
 		                <input type="file" name="attachFiles" id="input-flie" multiple>
@@ -39,5 +49,10 @@
             <button type="button" class="btn-white" th:onclick="|location.href='@{|/${boardVO.boardUrl}|}'|">목록으로 돌아가기</button>
         </div>
     </div>
+    <script>
+        ClassicEditor.create( document.querySelector( '#article-content' ), {
+            language: "ko"
+        } );
+    </script>
 </body>
 </html>

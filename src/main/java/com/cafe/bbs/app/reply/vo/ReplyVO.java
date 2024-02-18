@@ -1,11 +1,23 @@
 package com.cafe.bbs.app.reply.vo;
 
+import com.cafe.bbs.app.article.vo.validategroup.ArticleCreateGroup;
+import com.cafe.bbs.app.article.vo.validategroup.ArticleModifyGroup;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class ReplyVO {
 
 	private String replyId;
 	private String articleId;
+	@NotEmpty(message = "비밀번호를 입력하세요")
+	@Size(max = 12, message = "")
 	private String memberName;
+	@NotEmpty(message = "제목을 입력하세요")
+	@Size(max = 200, message = "최대 200자까지 입력 가능합니다")
 	private String replyContent;
+	@NotEmpty(message = "비밀번호를 입력하세요")
+	@Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하로 입력해주세요")
 	private String replyPassword;
 	private String replyCreateDate;
 	private String replyModifyDate;

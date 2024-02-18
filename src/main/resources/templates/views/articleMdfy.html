@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/translations/ko.js"></script>
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/articleWrite.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -31,9 +34,12 @@
             <form th:action="@{modify.do}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="articleId" th:value="${articleVO.articleId}" >
 				<div class="flex-col">
-	                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}">
-	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요" th:value="${articleVO.articleTitle}">
-	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"  th:text="${articleVO.articleContent}"></textarea>
+	                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}" th:errorclass="input-error">
+                    <span class="msg-error" th:errors="*{memberName}"></span>
+	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요" th:value="${articleVO.articleTitle}" th:errorclass="input-error">
+                    <span class="msg-error" th:errors="*{articleTitle}"></span>
+	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"  th:text="${articleVO.articleContent}" th:errorclass="input-error"></textarea>
+                    <span class="msg-error" th:errors="*{articleContent}"></span>
 	                
                     <div id="article-file">
     	                <h5>첨부파일</h5>
@@ -54,5 +60,10 @@
             <button type="button" class="btn-white" th:onclick="|location.href='@{|/${boardVO.boardUrl}|}'|">목록으로 돌아가기</button>
         </div>
     </div>
+    <script>
+        ClassicEditor.create( document.querySelector( '#article-content' ), {
+            language: "ko"
+        } );
+    </script>
 </body>
 </html>

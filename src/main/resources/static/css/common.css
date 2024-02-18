@@ -119,8 +119,15 @@ h5 {
 .deleted {
     text-decoration: line-through;
 }
-.field-error {
+.input-error {
+	border: 1px solid #FE5F55;
+}
+.msg-error {
+	padding: 3px;
 	color: #FE5F55;
+}
+.half {
+	width: 49%;
 }
 /* .btn-green:hover {
     color: #FAFAFA !important;

@@ -22,13 +22,13 @@
 }
 /* #article-writer 삭제 */
 #article-writer {
-    width: 49%;
+    width: 100%;
     margin-top: 15px;
     padding: 10px;
     font-size: 14px;
 }
 #article-password {
-    width: 49%;
+    width: 100%;
     margin-top: 15px;
     padding: 10px;
     font-size: 14px;
@@ -39,10 +39,12 @@
     padding: 12px;
     font-size: 16px;
 }
-#article-content {
-    margin-top: 15px;
+.ck-editor__top {
+    margin-top: 15px !important;
+}
+.ck-editor__editable { 
     padding: 12px;
-    min-height: 300px;
+	height: 400px;
 }
 #article-file {
     margin-top: 15px;
