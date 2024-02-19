@@ -69,7 +69,6 @@ public class ArticleController {
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
-
 		model.addAttribute("url", request.getRequestURL());
 		return "articleList";
 	}
