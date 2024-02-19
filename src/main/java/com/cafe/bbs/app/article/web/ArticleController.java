@@ -56,8 +56,7 @@ public class ArticleController {
 	@GetMapping("/{boardUrl}")
 	public String getArticleList(@PathVariable String boardUrl
 							   , @ModelAttribute SearchArticleVO searchArticleVO
-							   , Model model
-				  				, HttpServletRequest request) {
+							   , Model model) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		if (boardVO == null) {
 			throw new PageNotFoundException("페이지가 존재하지 않습니다");
@@ -69,7 +68,6 @@ public class ArticleController {
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
-		model.addAttribute("url", request.getRequestURL());
 		return "articleList";
 	}
 	
