@@ -11,7 +11,7 @@ import com.cafe.bbs.app.article.vo.SearchArticleVO;
 public interface ArticleService {
 
 	public List<ArticleVO> getAllArticle(SearchArticleVO searchArticleVO);
-	public ArticleVO getOneArticleByArticleId(String articleId);
+	public ArticleVO getOneArticleByArticleId(String articleId, boolean isIncrease);
 	public boolean createNewArticle(ArticleVO articleVO, List<MultipartFile> attachFiles);
 	public boolean modifyArticle(ArticleVO articleVO, List<MultipartFile> attachFiles, List<String> deleteFiles);
 	public boolean deleteOneArticle(String articleId);

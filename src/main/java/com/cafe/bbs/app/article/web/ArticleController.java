@@ -73,7 +73,7 @@ public class ArticleController {
 	public String getOneArticle(@PathVariable String boardUrl
 			  				  , @RequestParam String articleId
 			  				  , Model model) {
-		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
+		ArticleVO article = articleService.getOneArticleByArticleId(articleId, true);
 		if (article == null) {
 			throw new PageNotFoundException("페이지가 존재하지 않습니다");
 		}
@@ -94,7 +94,7 @@ public class ArticleController {
 								 , @RequestParam(name = "upperArticleId", required = false) String upperArticleId
 								 , Model model) {
 		if (upperArticleId != "") {
-			ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(upperArticleId);
+			ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(upperArticleId, false);
 			model.addAttribute("upperArticleVO", upperArticleVO);
 		}
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
@@ -112,7 +112,7 @@ public class ArticleController {
 								 , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles) {
 		if (bindingResult.hasErrors()) {
 			if (articleVO.getUpperArticleId() != "") {
-				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(articleVO.getUpperArticleId());
+				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(articleVO.getUpperArticleId(), false);
 				model.addAttribute("upperArticleVO", upperArticleVO);
 			}
 			BoardVO boardVO = boardService.getBoardVO(boardUrl);
@@ -138,14 +138,14 @@ public class ArticleController {
 		boolean isConfirmed = articleService.confirmPassword(articleVO);
 		String articleId = articleVO.getArticleId();
 		if (isConfirmed) {
-			ArticleVO article = articleService.getOneArticleByArticleId(articleId);
+			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 			BoardVO boardVO = boardService.getBoardVO(boardUrl);
 			model.addAttribute("boardVO", boardVO);
 			model.addAttribute("articleVO", article);
 			model.addAttribute("fileList", fileList);
 			if (article.getUpperArticleId() != null) {
-				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(article.getUpperArticleId());
+				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(article.getUpperArticleId(), false);
 				model.addAttribute("upperArticleVO", upperArticleVO);
 			}
 			return "articleMdfy";
@@ -164,14 +164,14 @@ public class ArticleController {
 			 				  , @RequestParam(name = "deleteFiles", required = false) List<String> deleteFiles) {
 		if (bindingResult.hasErrors()) {
 			String articleId = articleVO.getArticleId();
-			ArticleVO article = articleService.getOneArticleByArticleId(articleId);
+			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 			BoardVO boardVO = boardService.getBoardVO(boardUrl);
 			model.addAttribute("boardVO", boardVO);
 			model.addAttribute("articleVO", articleVO);
 			model.addAttribute("fileList", fileList);
 			if (article.getUpperArticleId() != null) {
-				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(article.getUpperArticleId());
+				ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(article.getUpperArticleId(), false);
 				model.addAttribute("upperArticleVO", upperArticleVO);
 			}
 			return "articleMdfy";

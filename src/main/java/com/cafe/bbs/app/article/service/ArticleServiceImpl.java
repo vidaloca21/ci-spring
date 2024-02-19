@@ -48,8 +48,10 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 	
 	@Override
-	public ArticleVO getOneArticleByArticleId(String articleId) {
-		articleDAO.increaseViewCount(articleId);
+	public ArticleVO getOneArticleByArticleId(String articleId, boolean isIncrease) {
+		if (isIncrease) {
+			articleDAO.increaseViewCount(articleId);
+		}
 		ArticleVO articleVO = articleDAO.getOneArticleByArticleId(articleId);
 		return articleVO;
 	}
