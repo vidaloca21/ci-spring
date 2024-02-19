@@ -97,7 +97,7 @@
         padding: 12px;
         resize: none;
     }
-    > input[type=submit] {
+    > input[type=button] {
         width: 8%;
         font-size: 14px;
     }

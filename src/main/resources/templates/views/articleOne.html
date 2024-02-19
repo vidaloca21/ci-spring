@@ -15,8 +15,6 @@
             const boardUrl = [[${boardVO.boardUrl}]]
             const currentUrl = window.location.pathname + window.location.search
             $("#input-current-url").val(currentUrl)
-			$("#modal-wrapper").click(function() {
-			})
             $(".close").click(function() {
                 location.reload();
             })
@@ -123,6 +121,23 @@
 				}
             })
             
+            $("#reply-submit").click(function() {
+                if ($("#member-name").val() && $("#reply-password").val() && $("#reply-write").val()) {
+                    $("#reply-form").submit()
+                }
+                else if($("#member-name").val() == "") {
+                    alert("작성자명을 입력해주세요")
+                }
+                else if($("#reply-password").val() == "") {
+                    alert("댓글 비밀번호를 입력해주세요")
+                }
+                else if($("#reply-write").val() == "") {
+                    alert("댓글 내용을 입력해주세요")
+                }
+                else {
+                    alert("문제가 있습니다")
+                }
+            })
 		})
 	</script>
 </head>
@@ -187,7 +202,7 @@
                 </div>
                 <div id="reply-write-wrapper">
                     <h5>댓글 쓰기</h5>
-	                <form th:action="@{/reply/write}" th:object="${replyVO}" method="post">
+	                <form th:action="@{/reply/write}" th:object="${replyVO}" method="post" id="reply-form">
 	                    <div id="replies-write">
 	                        <div class="flex-col">
 	                            <input type="text" name="memberName" id="member-name" placeholder="댓글 작성자">
@@ -196,7 +211,7 @@
 	                        <textarea name="replyContent" id="reply-write" placeholder="댓글 내용"></textarea>
 	                        <input type="hidden" name="articleId" th:value="${articleVO.articleId}">
 	                        <input type="hidden" name="currentUrl" id="input-current-url">
-	                        <input id="reply-submit" class="btn-green" type="submit" value="등록">
+	                        <input id="reply-submit" class="btn-green" type="button" value="등록">
 	                    </div>
 	                </form>
                 </div>

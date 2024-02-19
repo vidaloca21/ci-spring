@@ -26,8 +26,9 @@ import com.cafe.bbs.app.board.service.BoardService;
 import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
-
-import jakarta.validation.Valid;
+import com.cafe.bbs.exceptions.IncorrectPasswordException;
+import com.cafe.bbs.exceptions.PageNotFoundException;
+import com.cafe.bbs.exceptions.RequestFailedException;
 
 @Controller
 public class ArticleController {
@@ -52,6 +53,9 @@ public class ArticleController {
 							   , @ModelAttribute SearchArticleVO searchArticleVO
 							   , Model model) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
+		if (boardVO == null) {
+			throw new PageNotFoundException("페이지가 존재하지 않습니다.");
+		}
 		if (searchArticleVO.getBoardId() == null) {
 			searchArticleVO.setBoardId(boardVO.getBoardId());
 		}
@@ -64,9 +68,12 @@ public class ArticleController {
 	
 	@GetMapping("/{boardUrl}/view")
 	public String getOneArticle(@PathVariable String boardUrl
-			  				  , @RequestParam("articleId") String articleId
+			  				  , @RequestParam String articleId
 			  				  , Model model) {
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
+		if (article == null) {
+			throw new PageNotFoundException("페이지가 존재하지 않습니다.");
+		}
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
 		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 		NextArticleVO nextArticle = articleService.getBesideArticle(article);
@@ -138,7 +145,7 @@ public class ArticleController {
 			}
 			return "articleMdfy";
 		} else {
-			throw new IllegalArgumentException("비밀번호 틀림!");
+			throw new IncorrectPasswordException("잘못된 비밀번호입니다.");
 		}
 	}
 	
@@ -171,7 +178,6 @@ public class ArticleController {
 		}
 		return "articleMdfy";
 	}
-	
 
 	@PostMapping("/{boardUrl}/delete")
 	public String deleteOneArticle(@PathVariable String boardUrl
@@ -182,10 +188,10 @@ public class ArticleController {
 			if (isSuccess) {
 				return "redirect:/" +boardUrl;
 			} else {
-				throw new IllegalArgumentException("삭제 실패!");
+				throw new RequestFailedException("삭제 실패!");
 			}
 		} else{
-			throw new IllegalArgumentException("비밀번호 틀림!");
+			throw new IncorrectPasswordException("잘못된 비밀번호입니다.");
 		}
 	}
 	
