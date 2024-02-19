@@ -12,46 +12,20 @@
     <script th:inline="javascript">
 		$().ready(function() {
             const articleId = [[${articleVO.articleId}]]
-            const boardUrl = [[${boardVO.boardUrl}]]
             const currentUrl = window.location.pathname + window.location.search
-            $("#input-current-url").val(currentUrl)
             $(".close").click(function() {
                 location.reload();
             })
 			$("#article-modify").click(function() {
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
-                    let mdfyForm = $('<form></form>')
-                    mdfyForm.attr("action", "modify")
-                    mdfyForm.attr("method", "post")
-                    let articleIdDom = $('<input type="hidden"/>')
-                    articleIdDom.attr("name", "articleId")
-                    articleIdDom.val(articleId);
-                    let articlePwDom = $('<input type="hidden"/>')
-                    articlePwDom.attr("name", "articlePassword")
-                    articlePwDom.val($("#password-confirm").val());
-                    mdfyForm.append(articleIdDom)
-                    mdfyForm.append(articlePwDom)
-                    $("body").append(mdfyForm)
-                    mdfyForm.submit()
+					articleHandler(articleId, "modify");
 				})
 			})
 			$("#article-delete").click(function() {
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
-                    let deleteForm = $('<form></form>')
-                    deleteForm.attr("action", "delete")
-                    deleteForm.attr("method", "post")
-                    let articleIdDom = $('<input type="hidden"/>')
-                    articleIdDom.attr("name", "articleId")
-                    articleIdDom.val(articleId);
-                    let articlePwDom = $('<input type="hidden"/>')
-                    articlePwDom.attr("name", "articlePassword")
-                    articlePwDom.val($("#password-confirm").val());
-                    deleteForm.append(articleIdDom)
-                    deleteForm.append(articlePwDom)
-                    $("body").append(deleteForm)
-                    deleteForm.submit()
+					articleHandler(articleId, "delete");
 				})
 			})
             $(".reply-delete").click(function() {
@@ -117,35 +91,74 @@
 
             $("#modify-submit").click(function() {
 				if(confirm("댓글을 수정합니다")) {
+            		$("#input-current-url").val(currentUrl)
 	                $("#modify-form").submit()
 				}
             })
             
             $("#reply-submit").click(function() {
-                if ($("#member-name").val() && $("#reply-password").val() && $("#reply-write").val()) {
-                    $("#reply-form").submit()
-                }
-                else if($("#member-name").val() == "") {
-                    alert("작성자명을 입력해주세요")
-                }
-                else if($("#reply-password").val() == "") {
-                    alert("댓글 비밀번호를 입력해주세요")
-                }
-                else if($("#reply-write").val() == "") {
-                    alert("댓글 내용을 입력해주세요")
-                }
-                else {
-                    alert("문제가 있습니다")
-                }
+				var isValid = checkValidReply();
+				if (isValid.result) {
+        			$("#input-current-url").val(currentUrl)
+					$("#reply-form").submit()
+				} else {
+					alert(isValid.msg)
+				}
+				
             })
 		})
+		
+		function articleHandler(articleId, action) {
+            let articleForm = $('<form></form>')
+            articleForm.attr("action", action)
+            articleForm.attr("method", "post")
+            let articleIdDom = $('<input type="hidden"/>')
+            articleIdDom.attr("name", "articleId")
+            articleIdDom.val(articleId);
+            let articlePwDom = $('<input type="password"/>')
+            articlePwDom.attr("name", "articlePassword")
+            articlePwDom.val($("#password-confirm").val());
+            articleForm.append(articleIdDom)
+            articleForm.append(articlePwDom)
+            $("body").append(articleForm)
+            articleForm.submit()
+		}
+        
+        function checkValidReply() {
+			var memName = $("#member-name").val();
+			var repPassword = $("#reply-password").val();
+			var repContent = $("#reply-write").val();
+			if (memName && repPassword && repContent) {
+				if (memName.length > 12) {
+					return {result: false, msg:"작성자명은 12자 이내로 입력해주세요"}
+				}
+				if (repPassword.length < 4 || repPassword.length > 12) {
+					return {result: false, msg:"비밀번호는 4자 이상 12자 이하로 입력해주세요"}
+				}
+				if (repContent.length > 200) {
+					return {result: false, msg:"댓글 내용은 최대 200자까지 입력 가능합니다"}
+				}
+				return {result: true, msg:"성공"};
+			}
+			else {
+				if (!memName) {
+					return {result: false, msg:"작성자명을 입력해주세요"}
+				}
+				if (!repPassword) {
+					return {result: false, msg:"댓글 비밀번호를 입력해주세요"}
+				}
+				if (!repContent) {
+					return {result: false, msg:"댓글 내용을 입력해주세요"}
+				}
+			}
+		}
 	</script>
 </head>
 <body>
 	<div th:replace="~{./boardNav :: gnv}"></div>
     <div id="container">
         <div id="article-wrapper">
-            <div id="article">
+            <div id="article" th:data-articleId="${articleVO.articleId}">
                 <div id="article-title">
                     <h3 th:text="${articleVO.articleTitle}">제목입니다</h3>
                     <div class="flex-row">

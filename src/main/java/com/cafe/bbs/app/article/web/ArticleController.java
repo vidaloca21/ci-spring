@@ -30,6 +30,8 @@ import com.cafe.bbs.exceptions.IncorrectPasswordException;
 import com.cafe.bbs.exceptions.PageNotFoundException;
 import com.cafe.bbs.exceptions.RequestFailedException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class ArticleController {
 	
@@ -47,11 +49,11 @@ public class ArticleController {
 		return "intro";
 	}
 	
-
 	@GetMapping("/{boardUrl}")
 	public String getArticleList(@PathVariable String boardUrl
 							   , @ModelAttribute SearchArticleVO searchArticleVO
-							   , Model model) {
+							   , Model model
+				  				, HttpServletRequest request) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		if (boardVO == null) {
 			throw new PageNotFoundException("페이지가 존재하지 않습니다.");
@@ -63,6 +65,8 @@ public class ArticleController {
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
+
+		model.addAttribute("url", request.getRequestURL());
 		return "articleList";
 	}
 	
