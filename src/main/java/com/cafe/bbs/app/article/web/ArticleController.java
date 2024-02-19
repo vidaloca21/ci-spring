@@ -2,6 +2,8 @@ package com.cafe.bbs.app.article.web;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +37,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class ArticleController {
 	
+	private final static Logger logger = LoggerFactory.getLogger(ArticleController.class);
 	@Autowired
 	private ArticleService articleService;
 	@Autowired
@@ -43,6 +46,7 @@ public class ArticleController {
 	private BoardService boardService;
 	@Autowired
 	private ReplyService replyService;
+	
 	
 	@GetMapping("")
 	public String getIntro() {
@@ -56,7 +60,7 @@ public class ArticleController {
 				  				, HttpServletRequest request) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		if (boardVO == null) {
-			throw new PageNotFoundException("페이지가 존재하지 않습니다.");
+			throw new PageNotFoundException("페이지가 존재하지 않습니다");
 		}
 		if (searchArticleVO.getBoardId() == null) {
 			searchArticleVO.setBoardId(boardVO.getBoardId());
@@ -76,7 +80,7 @@ public class ArticleController {
 			  				  , Model model) {
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId);
 		if (article == null) {
-			throw new PageNotFoundException("페이지가 존재하지 않습니다.");
+			throw new PageNotFoundException("페이지가 존재하지 않습니다");
 		}
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
 		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
@@ -127,7 +131,9 @@ public class ArticleController {
 			String articleId = articleVO.getArticleId();
 			return "redirect:view?articleId="+articleId;
 		}
-		return "articleWrite";
+		else {
+			throw new RequestFailedException("게시글 등록에 실패하였습니다");
+		}
 	}
 	
 	@PostMapping("/{boardUrl}/modify")
@@ -149,7 +155,7 @@ public class ArticleController {
 			}
 			return "articleMdfy";
 		} else {
-			throw new IncorrectPasswordException("잘못된 비밀번호입니다.");
+			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}
 	
@@ -180,7 +186,9 @@ public class ArticleController {
 			String articleId = articleVO.getArticleId();
 			return "redirect:view?articleId="+articleId;
 		}
-		return "articleMdfy";
+		else {
+			throw new RequestFailedException("게시글 수정에 실패하였습니다");			
+		}
 	}
 
 	@PostMapping("/{boardUrl}/delete")
@@ -192,10 +200,10 @@ public class ArticleController {
 			if (isSuccess) {
 				return "redirect:/" +boardUrl;
 			} else {
-				throw new RequestFailedException("삭제 실패!");
+				throw new RequestFailedException("게시글 삭제에 실패하였습니다");
 			}
 		} else{
-			throw new IncorrectPasswordException("잘못된 비밀번호입니다.");
+			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}
 	
