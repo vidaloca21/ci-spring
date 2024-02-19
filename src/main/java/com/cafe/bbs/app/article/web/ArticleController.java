@@ -32,8 +32,6 @@ import com.cafe.bbs.exceptions.IncorrectPasswordException;
 import com.cafe.bbs.exceptions.PageNotFoundException;
 import com.cafe.bbs.exceptions.RequestFailedException;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 @Controller
 public class ArticleController {
 	
