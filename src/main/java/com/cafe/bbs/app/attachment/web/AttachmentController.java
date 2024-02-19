@@ -22,7 +22,7 @@ public class AttachmentController {
 	private FileHandler fileHandler;
 	
 	@GetMapping("/file/download/{attachmentId}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable("attachmentId") String attachmentId) {
+	public ResponseEntity<Resource> downloadFile(@PathVariable String attachmentId) {
 		AttachmentVO attachmentVO = attachmentService.getOneAttachment(attachmentId);
 		File storedFile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
 		return fileHandler.getResponseEntity(storedFile, attachmentVO.getOriginFilename());

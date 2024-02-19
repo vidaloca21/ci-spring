@@ -43,6 +43,11 @@
                     </tr>
                 </thead>
                 <tbody>
+					<th:block th:if="${articleList.empty}">
+						<tr>
+							<td colspan="6">등록된 게시글이 없습니다!</td>
+						</tr>
+					</th:block>
                     <tr th:each="articleVO : ${articleList}" 
                     	th:classappend="${articleVO.level} > 2 ? 'level-3' : 'level-'+${articleVO.level}">
                         <td class="article-num"- th:text="${articleVO.articleNum}"></td>
