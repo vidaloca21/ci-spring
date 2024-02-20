@@ -1,6 +1,5 @@
 $().ready(function() {
     const articleId = $("#article").data("articleid")
-    const currentUrl = window.location.pathname + window.location.search
     $(".close").click(function() {
         location.reload();
     })
@@ -21,7 +20,7 @@ $().ready(function() {
         let action = 'delete'
 		$("#modal-wrapper").removeClass("hidden")
 		$("#password-submit-btn").click(function() {
-            replyPasswordHandler(replyId, action, currentUrl);
+            replyPasswordHandler(replyId, action);
 		})
     })
 
@@ -30,12 +29,11 @@ $().ready(function() {
         let action = 'modify'
 		$("#modal-wrapper").removeClass("hidden")
 		$("#password-submit-btn").click(function() {
-            replyPasswordHandler(replyId, action, currentUrl);
+            replyPasswordHandler(replyId, action);
 		})
     })
 
     $("#reply-submit").click(function() {
-        $("#input-current-url").val(currentUrl)
         let action = $("#reply-form-action").val();
         replySubmitHandler(action);
     })
@@ -65,7 +63,7 @@ function replySubmitHandler(action) {
     }
 }
 
-function replyPasswordHandler(replyId, action, currentUrl) {
+function replyPasswordHandler(replyId, action) {
     let replyForm = $("#modal-password-form")
     replyForm.attr("method", "post")
 
@@ -78,14 +76,9 @@ function replyPasswordHandler(replyId, action, currentUrl) {
     replyPwDom.attr("name", "replyPassword")
 
     if (action == 'modify') {
-        replyForm.attr("action", currentUrl)
+        replyForm.attr("action", "")
     } else if (action == 'delete') {
         replyForm.attr("action", "/reply/delete")
-
-        let urlDom = $('<input type="hidden"/>')
-        urlDom.attr("name", "currentUrl")
-        urlDom.val(currentUrl);
-        replyForm.append(urlDom)
     }
 
     replyForm.submit()

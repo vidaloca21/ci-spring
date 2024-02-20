@@ -4,18 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
 import com.cafe.bbs.app.reply.vo.validategroup.ReplyCreateGroup;
 import com.cafe.bbs.app.reply.vo.validategroup.ReplyModifyGroup;
 import com.cafe.bbs.exceptions.RequestFailedException;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
@@ -38,13 +40,14 @@ public class ReplyController {
 	public String createNewReply(@Validated(ReplyCreateGroup.class)
 								 @ModelAttribute ReplyVO replyVO
 							   , BindingResult bindingResult
-			   				   , @RequestParam("currentUrl") String currentUrl) {
+							   , HttpServletRequest request) {
+		String nextUrl = (String)request.getHeader("REFERER");
 		if (bindingResult.hasErrors()) {
-			return "redirect:"+currentUrl;
+			return "redirect:" +nextUrl;
 		}
 		boolean isSuccess = replyService.createNewReply(replyVO);
 		if (isSuccess) {
-			return "redirect:"+currentUrl;
+			return "redirect:" +nextUrl;
 		} else {
 			logger.warn("Failed to write new reply");
 			throw new RequestFailedException("댓글 작성에 실패하였습니다");
@@ -63,13 +66,14 @@ public class ReplyController {
 	public String modifyOneReply(@Validated(ReplyModifyGroup.class)
 								 @ModelAttribute ReplyVO replyVO
 							   , BindingResult bindingResult
-							   , @RequestParam String currentUrl) {
+							   , HttpServletRequest request) {
+		String nextUrl = (String)request.getHeader("REFERER");
 		if (bindingResult.hasErrors()) {
-			return "redirect:"+currentUrl;
+			return "redirect:" +nextUrl;
 		}
 		boolean isSuccess = replyService.modifyOneReply(replyVO);
 		if (isSuccess) {
-			return "redirect:" +currentUrl;
+			return "redirect:" +nextUrl;
 		} else {
 			logger.warn("Failed to modify a reply");
 			throw new RequestFailedException("댓글 수정에 실패하였습니다");
@@ -86,18 +90,23 @@ public class ReplyController {
 	 */
 	@PostMapping("/delete")
 	public String deleteOneReply(@ModelAttribute ReplyVO replyVO
-			   				   , @RequestParam String currentUrl) {
+							   , HttpServletRequest request
+							   , Model model) {
+		String nextUrl = (String)request.getHeader("REFERER");
 		boolean isConfirmed = replyService.confirmReplyPassword(replyVO);
 		if (isConfirmed) {
 			boolean isSuccess = replyService.deleteOneReply(replyVO);
 			if (isSuccess) {
-				return "redirect:"+currentUrl;
+				return "redirect:" +nextUrl;
 			} else {
 				logger.warn("Failed to delete a reply");
 				throw new RequestFailedException("댓글 삭제에 실패하였습니다");
 			}
 		} else {
-			return "redirect:"+currentUrl;
+			String msg = "잘못된 비밀번호입니다";
+			model.addAttribute("msg", msg);
+			model.addAttribute("nextUrl", nextUrl);
+			return "error/sendNext";
 		}
 	}
 	

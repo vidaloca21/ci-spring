@@ -2,8 +2,6 @@ package com.cafe.bbs.app.article.web;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,15 +26,15 @@ import com.cafe.bbs.app.board.service.BoardService;
 import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
-import com.cafe.bbs.exceptions.IncorrectPasswordException;
 import com.cafe.bbs.exceptions.PageNotFoundException;
 import com.cafe.bbs.exceptions.RequestFailedException;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
 public class ArticleController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(ArticleController.class);
 	@Autowired
 	private ArticleService articleService;
 	@Autowired
@@ -108,7 +106,8 @@ public class ArticleController {
 	public String getOneArticleWithModifyReply(@PathVariable String boardUrl
 										     , @RequestParam String articleId
 										     , @ModelAttribute ReplyVO replyVO
-										     , Model model) {
+										     , HttpServletRequest request
+						  					 , Model model) {
 		boolean isConfirmed = replyService.confirmReplyPassword(replyVO);
 		if (isConfirmed) {
 			ReplyVO targetReply = replyService.getOneReplyByReplyId(replyVO.getReplyId());
@@ -125,8 +124,11 @@ public class ArticleController {
 			model.addAttribute("targetReply", targetReply);
 			return "articleOne";
 		} else {
-			logger.warn("Incorrect Password");
-			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
+			String nextUrl = (String)request.getHeader("REFERER");
+			String msg = "잘못된 비밀번호입니다";
+			model.addAttribute("msg", msg);
+			model.addAttribute("nextUrl", nextUrl);
+			return "error/sendNext";
 		}
 	}
 	
@@ -181,7 +183,6 @@ public class ArticleController {
 			return "redirect:view?articleId="+articleId;
 		}
 		else {
-			logger.warn("Failed to write new article");
 			throw new RequestFailedException("게시글 등록에 실패하였습니다");
 		}
 	}
@@ -195,7 +196,8 @@ public class ArticleController {
 	@PostMapping("/{boardUrl}/modify")
 	public String modifyArticle(@PathVariable String boardUrl
 			 				  , @ModelAttribute ArticleVO articleVO
-			 				  , Model model) {
+			 				  , HttpServletRequest request
+			  				  , Model model) {
 		boolean isConfirmed = articleService.confirmPassword(articleVO);
 		String articleId = articleVO.getArticleId();
 		if (isConfirmed) {
@@ -211,8 +213,11 @@ public class ArticleController {
 			}
 			return "articleMdfy";
 		} else {
-			logger.warn("Incorrect Password");
-			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
+			String nextUrl = (String)request.getHeader("REFERER");
+			String msg = "잘못된 비밀번호입니다";
+			model.addAttribute("msg", msg);
+			model.addAttribute("nextUrl", nextUrl);
+			return "error/sendNext";
 		}
 	}
 	
@@ -252,7 +257,6 @@ public class ArticleController {
 			return "redirect:view?articleId="+articleId;
 		}
 		else {
-			logger.warn("Failed to modify an article");
 			throw new RequestFailedException("게시글 수정에 실패하였습니다");			
 		}
 	}
@@ -266,19 +270,23 @@ public class ArticleController {
 	 */
 	@PostMapping("/{boardUrl}/delete")
 	public String deleteOneArticle(@PathVariable String boardUrl
-			  					 , @ModelAttribute ArticleVO articleVO) {
+			  					 , @ModelAttribute ArticleVO articleVO
+			  					 , HttpServletRequest request
+			  					 , Model model) {
 		boolean isConfirmed = articleService.confirmPassword(articleVO);
 		if (isConfirmed) {
 			boolean isSuccess = articleService.deleteOneArticle(articleVO.getArticleId());
 			if (isSuccess) {
 				return "redirect:/" +boardUrl;
 			} else {
-				logger.warn("Failed to delete an article");
 				throw new RequestFailedException("게시글 삭제에 실패하였습니다");
 			}
 		} else{
-			logger.warn("Incorrect Password");
-			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
+			String nextUrl = (String)request.getHeader("REFERER");
+			String msg = "잘못된 비밀번호입니다";
+			model.addAttribute("msg", msg);
+			model.addAttribute("nextUrl", nextUrl);
+			return "error/sendNext";
 		}
 	}
 	

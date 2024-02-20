@@ -6,8 +6,8 @@
     <title>게시판</title>
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css" rel="stylesheet">
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/articleOne.css">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/articleOne.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/js/articleOne.js"></script>
 </head>
@@ -83,7 +83,6 @@
 	                        </div>
 	                        <textarea name="replyContent" id="reply-write" placeholder="댓글 내용" th:text="${targetReply} ? ${targetReply.replyContent} : ''"></textarea>
 	                        <input type="hidden" name="articleId" th:value="${articleVO.articleId}">
-	                        <input type="hidden" name="currentUrl" id="input-current-url">
 	                        <input type="hidden" id="reply-form-action" th:value="${targetReply} ? 'modify' : 'write'">
 	                        <th:block th:if="${targetReply} == null">
                                 <input id="reply-submit" class="btn-green" type="button" value="등록">
@@ -118,7 +117,6 @@
             </div>
         </div>
     </div>
-
 
     <div id="modal-wrapper" class="hidden">
         <form id="modal-password-form">
