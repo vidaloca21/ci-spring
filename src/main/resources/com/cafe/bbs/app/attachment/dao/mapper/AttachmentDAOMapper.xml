@@ -51,7 +51,7 @@
 			 , SYSDATE )
 	</insert>
 	
-	<delete id="deleteAttachmentVO"
+	<delete id="deleteAttachment"
 			parameterType="string">
 		DELETE FROM ATTACHMENT
 		 WHERE ATTACHMENT_ID = #{_parameter} 		

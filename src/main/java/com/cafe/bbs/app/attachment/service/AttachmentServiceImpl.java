@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cafe.bbs.app.attachment.dao.AttachmentDAO;
 import com.cafe.bbs.app.attachment.vo.AttachmentVO;
@@ -22,8 +23,9 @@ public class AttachmentServiceImpl implements AttachmentService {
 	public AttachmentVO getOneAttachment(String attachmentId) {
 		return attachmentDAO.getOneAttachment(attachmentId);
 	}
+	@Transactional
 	@Override
-	public boolean deleteAttachmentVO(String attachmentId) {
-		return attachmentDAO.deleteAttachmentVO(attachmentId) >0;
+	public boolean deleteAttachment(String attachmentId) {
+		return attachmentDAO.deleteAttachment(attachmentId) >0;
 	}
 }

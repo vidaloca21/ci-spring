@@ -24,6 +24,10 @@ public class AttachmentController {
 	@Autowired
 	private FileHandler fileHandler;
 	
+	/*
+	 * 파일 다운로드 수행을 위한 controller
+	 * DB에 저장된 파일 정보를 바탕으로 서버에 저장된 파일을 ResponseEntity로 반환
+	 */
 	@GetMapping("/file/download/{attachmentId}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable String attachmentId) {
 		AttachmentVO attachmentVO = attachmentService.getOneAttachment(attachmentId);

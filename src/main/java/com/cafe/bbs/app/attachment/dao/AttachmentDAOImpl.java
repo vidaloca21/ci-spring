@@ -39,7 +39,7 @@ public class AttachmentDAOImpl extends SqlSessionDaoSupport implements Attachmen
 	}
 	
 	@Override
-	public int deleteAttachmentVO(String attachmentId) {
-		return getSqlSession().delete("deleteAttachmentVO", attachmentId);
+	public int deleteAttachment(String attachmentId) {
+		return getSqlSession().delete("deleteAttachment", attachmentId);
 	}
 }

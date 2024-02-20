@@ -46,12 +46,15 @@ public class ArticleController {
 	@Autowired
 	private ReplyService replyService;
 	
-	
 	@GetMapping("")
 	public String getIntro() {
 		return "intro";
 	}
 	
+	/*
+	 * 게시글 목록(게시판) controller
+	 * 게시판 URL이 잘못되었을 경우 PageNotFoundException 반환
+	 */
 	@GetMapping("/{boardUrl}")
 	public String getArticleList(@PathVariable String boardUrl
 							   , @ModelAttribute SearchArticleVO searchArticleVO
@@ -70,6 +73,10 @@ public class ArticleController {
 		return "articleList";
 	}
 	
+	/*
+	 * 게시글 단건조회 controller
+	 * 게시글 정보를 불러오지 못했을 경우 PageNotFoundException을 반환
+	 */
 	@GetMapping("/{boardUrl}/view")
 	public String getOneArticle(@PathVariable String boardUrl
 			  				  , @RequestParam String articleId
@@ -90,6 +97,13 @@ public class ArticleController {
 		return "articleOne";
 	}
 	
+	/*
+	 * 댓글 수정을 위한 게시글 단건조회 controller
+	 * 댓글 비밀번호 검증을 위해 PostMapping으로 구현
+	 * 사용자가 전송한 댓글 비밀번호와 DB에 저장된 댓글 비밀번호 비교 후,
+	 * 비밀번호가 일치하면 수정할 댓글의 원본 정보를 함께 반환
+	 * 비밀번호가 일치하지 않으면 IncorrectPasswordException 반환
+	 */
 	@PostMapping("/{boardUrl}/view")
 	public String getOneArticleWithModifyReply(@PathVariable String boardUrl
 										     , @RequestParam String articleId
@@ -111,11 +125,16 @@ public class ArticleController {
 			model.addAttribute("targetReply", targetReply);
 			return "articleOne";
 		} else {
-			logger.warn("Incorrce Password");
+			logger.warn("Incorrect Password");
 			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}
 	
+	/*
+	 * 게시글 작성 페이지 controller
+	 * 새로운 게시글 작성 페이지로 이동
+	 * 새로운 게시글이 기존 게시글의 답글일 경우 상위 게시글의 정보를 함께 반환
+	 */
 	@GetMapping("/{boardUrl}/write")
 	public String createNewArticle(@PathVariable String boardUrl
 								 , @RequestParam(name = "upperArticleId", required = false) String upperArticleId
@@ -130,6 +149,14 @@ public class ArticleController {
 		return "articleWrite";
 	}
 	
+	/*
+	 * 게시글 작성 수행 controller
+	 * 사용자 입력값에 대해 유효성 검사 수행 후,
+	 * 문제가 있다면 게시글 작성 페이지 재반환
+	 * 문제가 없을 경우 게시글 정보와 첨부 파일 목록을 DB에 저장
+	 * 게시글 작성 성공 시 작성한 게시글의 단건 조회 페이지로 이동
+	 * 게시글 작성 실패 시 RequestFailedException 반환
+	 */
 	@PostMapping("/{boardUrl}/write")
 	public String createNewArticle(@PathVariable String boardUrl
 			 					 , @Validated(ArticleCreateGroup.class)
@@ -159,6 +186,12 @@ public class ArticleController {
 		}
 	}
 	
+	/*
+	 * 게시글 수정 페이지 controller
+	 * 사용자가 전송한 게시글 비밀번호와 DB에 저장된 게시글 비밀번호 비교 후,
+	 * 비밀번호가 일치하면 수정할 게시글의 원본 정보와 게시글 수정 페이지를 반환
+	 * 비밀번호가 일치하지 않으면 IncorrectPasswordException 반환
+	 */
 	@PostMapping("/{boardUrl}/modify")
 	public String modifyArticle(@PathVariable String boardUrl
 			 				  , @ModelAttribute ArticleVO articleVO
@@ -178,11 +211,19 @@ public class ArticleController {
 			}
 			return "articleMdfy";
 		} else {
-			logger.warn("Incorrce Password");
+			logger.warn("Incorrect Password");
 			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}
 	
+	/*
+	 * 게시글 수정 수행 controller
+	 * 사용자가 입력한 게시글의 정보에 대해 유효성 검사 수행 후,
+	 * 이상이 있다면 사용자가 전송한 게시글 정보와 게시글 수정 페이지 재반환
+	 * 이상이 없다면 게시글 수정 수행 후,
+	 * 게시글 수정 성공 시 수정된 게시글의 단건 조회 페이지로 이동
+	 * 게시글 수정 실패 시 RequestFailedException 반환
+	 */
 	@PostMapping("/{boardUrl}/modify.do")
 	public String modifyArticle(@PathVariable String boardUrl
 							  , @Validated(ArticleModifyGroup.class)
@@ -216,6 +257,13 @@ public class ArticleController {
 		}
 	}
 
+	/*
+	 * 게시글 삭제 수행 controller
+	 * 사용자가 전송한 게시글의 비밀번호와 DB에 저장된 게시글 비밀번호가 일치할 경우 게시글 삭제 수행
+	 * 두 비밀번호가 일치하지 않는다면 IncorrectPasswordException 반환
+	 * 게시글 삭제 수행 후 게시판 목록으로 redirect
+	 * 게시글 삭제 실패시 RequestFailedException 반환
+	 */
 	@PostMapping("/{boardUrl}/delete")
 	public String deleteOneArticle(@PathVariable String boardUrl
 			  					 , @ModelAttribute ArticleVO articleVO) {
@@ -229,7 +277,7 @@ public class ArticleController {
 				throw new RequestFailedException("게시글 삭제에 실패하였습니다");
 			}
 		} else{
-			logger.warn("Incorrce Password");
+			logger.warn("Incorrect Password");
 			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}

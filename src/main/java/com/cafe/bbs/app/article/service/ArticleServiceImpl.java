@@ -44,6 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
 			article.setFileCnt(fileCnt);
 		}
 		searchArticleVO.setPageCount(articleDAO.getArticleCount(searchArticleVO));
+		
 		return articleList;
 	}
 	
@@ -53,76 +54,116 @@ public class ArticleServiceImpl implements ArticleService {
 			articleDAO.increaseViewCount(articleId);
 		}
 		ArticleVO articleVO = articleDAO.getOneArticleByArticleId(articleId);
+		
 		return articleVO;
 	}
 	
 	@Transactional
 	@Override
 	public boolean createNewArticle(ArticleVO articleVO, List<MultipartFile> attachFiles) {
+		// 사용자가 입력한 비밀번호 암호화
 		String salt = sha.generateSalt();
 		String password = articleVO.getArticlePassword();
 		String encryptedPassword = sha.getEncrypt(password, salt);
 		articleVO.setArticlePassword(encryptedPassword);
 		articleVO.setArticleSalt(salt);
-		articleDAO.createNewArticleInfo(articleVO);
+		
+		// 게시글의 기본 정보 DB에 저장(ARTICLE_MASTER)
+		boolean isArticleInfoSuccess = articleDAO.createNewArticleInfo(articleVO) >0;
+		
+		// 사용자가 첨부한 파일의 개수와 DB에 실제 저장된 파일의 개수 비교
+		int fileCnt = attachFiles.size();
+		int successCnt = 0;
 		for (MultipartFile file: attachFiles) {
 			StoredFile storedFile = fileHandler.storeFile(file);
 			if (storedFile == null) {
+				fileCnt = 0;
 				break;
 			}
 			AttachmentVO attachmentVO = new AttachmentVO();
 			attachmentVO.setArticleId(articleVO.getArticleId());
 			attachmentVO.setOriginFilename(storedFile.getFileName());
 			attachmentVO.setUuidFilename(storedFile.getRealFileName());
-			attachmentDAO.storeNewFile(attachmentVO);
+			successCnt += attachmentDAO.storeNewFile(attachmentVO);
 		}
-		return articleDAO.createNewArticle(articleVO) >0;
+		boolean isFileSuccess = fileCnt == successCnt;
+		
+		// 게시글 정보 DB에 저장(ARTICLE)
+		boolean isArticleSuccess = articleDAO.createNewArticle(articleVO) >0;
+		
+		// 게시글 기본 정보 저장, 게시글 정보 저장, 파일 저장 성공 여부 반환
+		return isArticleInfoSuccess && isArticleSuccess && isFileSuccess;
 	}
 	
 	@Transactional
 	@Override
 	public boolean modifyArticle(ArticleVO articleVO, List<MultipartFile> attachFiles, List<String> deleteFiles) {
-		String articlePassword = articleDAO.getArticlePassword(articleVO.getArticleId()).getArticlePassword();
-		articleVO.setArticlePassword(articlePassword);
+		// 사용자가 삭제 요청한 게시글 첨부파일 DB삭제 수행
+		int deleteFileCnt = 0;
+		int deleteCnt = 0;
 		if (deleteFiles != null) {
+			deleteFileCnt = deleteFiles.size();
 			for (String attachmentId: deleteFiles) {
 				AttachmentVO attachmentVO = attachmentDAO.getOneAttachment(attachmentId);
 				File originfile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
 				if (originfile.exists() && originfile.isFile()) {
-					attachmentDAO.deleteAttachmentVO(attachmentVO.getAttachmentId());
+					attachmentDAO.deleteAttachment(attachmentVO.getAttachmentId());
 					originfile.delete();
+					deleteCnt++;
 				}
 			}
 		}
+		boolean isFileDeleteSuccess = deleteFileCnt == deleteCnt;
+		
+		// 사용자가 등록 요청한 게시글 첨부파일 DB저장 수행
+		int fileCnt = attachFiles.size();
+		int successCnt = 0;
 		for (MultipartFile file: attachFiles) {
 			StoredFile storedFile = fileHandler.storeFile(file);
 			if (storedFile == null) {
+				fileCnt = 0;
 				break;
 			}
 			AttachmentVO attachmentVO = new AttachmentVO();
 			attachmentVO.setArticleId(articleVO.getArticleId());
 			attachmentVO.setOriginFilename(storedFile.getFileName());
 			attachmentVO.setUuidFilename(storedFile.getRealFileName());
-			attachmentDAO.storeNewFile(attachmentVO);
+			successCnt += attachmentDAO.storeNewFile(attachmentVO);
 		}
-		boolean isSuccess = articleDAO.modifyArticleInfo(articleVO) >0 && articleDAO.modifyArticle(articleVO) >0;  
-		return isSuccess;
+		boolean isFileUploadSuccess = fileCnt == successCnt;
+
+		// 게시글 기본 정보와 게시글 정보 DB에 수정
+		boolean isArticleInfoSuccess = articleDAO.modifyArticleInfo(articleVO) >0;
+		boolean isArticleSuccess = articleDAO.modifyArticle(articleVO) >0;
+		
+		// 게시글 기본 정보 및 정보 UPDATE 성공 여부, 파일 삭제 성공 여부, 파일 저장 성공 여부 반환 
+		return isArticleInfoSuccess && isArticleSuccess && isFileDeleteSuccess && isFileUploadSuccess;
 	}
 	
 	@Transactional
 	@Override
 	public boolean deleteOneArticle(String articleId) {
+		// 게시글에 첨부된 파일 목록에 대해 삭제 수행
 		List<AttachmentVO> fileList = attachmentDAO.getAllFilesByArticleId(articleId);
+		int deleteFileCnt = fileList.size();
+		int deleteCnt = 0;
 		if (fileList.size() >0) {
 			for (AttachmentVO attachmentVO: fileList) {
 				File originfile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
 				if (originfile.exists() && originfile.isFile()) {
-					attachmentDAO.deleteAttachmentVO(attachmentVO.getAttachmentId());
+					attachmentDAO.deleteAttachment(attachmentVO.getAttachmentId());
 					originfile.delete();
+					deleteCnt++;
 				}
 			}
 		}
-		return articleDAO.deleteOneArticle(articleId) >0;
+		boolean isFileDeleteSuccess = deleteFileCnt == deleteCnt;
+		
+		// 게시글 정보를 DB에서 비공개 처리함
+		boolean isArticleDeleteSuccess = articleDAO.deleteOneArticle(articleId) >0;
+		
+		// 파일 삭제 성공 여부, 비공개 처리 성공 여부 반환
+		return isArticleDeleteSuccess && isFileDeleteSuccess;
 	}
 	
 	@Override
@@ -133,6 +174,7 @@ public class ArticleServiceImpl implements ArticleService {
 		String salt = originArticle.getArticleSalt();
 		String userPassword = articleVO.getArticlePassword();
 		String encryptedPassword = sha.getEncrypt(userPassword, salt);
+		
 		return originPassword.equals(encryptedPassword);
 	}
 	

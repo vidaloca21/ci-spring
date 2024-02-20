@@ -1,18 +1,12 @@
 package com.cafe.bbs.app.reply.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,14 +26,14 @@ public class ReplyController {
 	@Autowired
 	private ReplyService replyService;
 	
-	@GetMapping("/{articleId}")
-	public Map<String, Object> getRepliesByArticleId(@PathVariable String articleId) {
-		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("result", replyList);
-		return resultMap;
-	}
-	
+	/*
+	 * 댓글 작성 수행 contoller
+	 * 댓글 유효성 검사 수행 후,
+	 * 문제가 있다면 댓글 작성을 수행하지 않고 기존 페이지로 redirect
+	 * 문제가 없다면 댓글 작성 수행
+	 * 댓글 작성 성공시 기존 페이지로 redirect
+	 * 댓글 작성 실패시 RequestFailedException 반환
+	 */
 	@PostMapping("/write")
 	public String createNewReply(@Validated(ReplyCreateGroup.class)
 								 @ModelAttribute ReplyVO replyVO
@@ -57,6 +51,14 @@ public class ReplyController {
 		}
 	}
 	
+	/*
+	 * 댓글 수정 수행 controller
+	 * 댓글 유효성 검사 수행 후,
+	 * 문제가 있다면 댓글 수정을 수행하지 않고 기존 페이지로 redirect
+	 * 문제가 없다면 댓글 수정 수행
+	 * 댓글 수정 성공시 기존 페이지로 redirect
+	 * 댓글 수정 실패시 RequestFailedException 반환
+	 */
 	@PostMapping("/modify.do")
 	public String modifyOneReply(@Validated(ReplyModifyGroup.class)
 								 @ModelAttribute ReplyVO replyVO
@@ -74,6 +76,14 @@ public class ReplyController {
 		}
 	}
 	
+	/*
+	 * 댓글 삭제 수행 controller
+	 * 사용자가 입력한 비밀번호와 DB에 저장된 댓글 비밀번호 비교 후,
+	 * 일치하지 않으면 댓글 삭제를 수행하지 않고 기존 페이지로 redirect
+	 * 일치하면 댓글 삭제 수행
+	 * 댓글 삭제 성공시 기존 페이지로 redirect
+	 * 댓글 삭제 실패시 RequestFailedException 반환
+	 */
 	@PostMapping("/delete")
 	public String deleteOneReply(@ModelAttribute ReplyVO replyVO
 			   				   , @RequestParam String currentUrl) {
