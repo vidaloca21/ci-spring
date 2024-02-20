@@ -3,28 +3,6 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cafe.bbs.app.board.dao">
 	
-	<select id="getAllBoardList"
-			resultType="com.cafe.bbs.app.board.vo.BoardVO">
-		SELECT BOARD_ID
-			 , BOARD_NAME
-			 , BOARD_URL
-		  FROM BOARD
-	</select>
-	
-	<select id="getBoardId"
-			resultType="string">
-		SELECT BOARD_ID
-		  FROM BOARD
-		 WHERE BOARD_URL = #{_parameter}
-	</select>
-
-	<select id="getBoardUrl"
-			resultType="string">
-		SELECT BOARD_URL
-		  FROM BOARD
-		 WHERE BOARD_ID = #{_parameter}
-	</select>
-	
 	<select id="getBoardVO"
 			parameterType="string"
 			resultType="com.cafe.bbs.app.board.vo.BoardVO">
@@ -35,4 +13,16 @@
 		 WHERE 1=1
 		   AND BOARD_URL = #{_parameter}
 	</select>
+	
+	<select id="getBoardVOById"
+			parameterType="string"
+			resultType="com.cafe.bbs.app.board.vo.BoardVO">
+		SELECT BOARD_ID
+			 , BOARD_NAME
+			 , BOARD_URL
+		  FROM BOARD
+		 WHERE 1=1
+		   AND BOARD_ID = #{_parameter}
+	</select>
+	
 </mapper>

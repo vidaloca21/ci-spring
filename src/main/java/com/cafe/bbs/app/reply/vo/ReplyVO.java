@@ -14,11 +14,12 @@ public class ReplyVO {
 	@Size(groups = {ReplyCreateGroup.class}, max = 12, message = "")
 	private String memberName;
 	@NotEmpty(groups = {ReplyCreateGroup.class, ReplyModifyGroup.class}, message = "댓글 내용을 입력하세요")
-	@Size(max = 200, message = "최대 200자까지 입력 가능합니다")
+	@Size(groups = {ReplyCreateGroup.class, ReplyModifyGroup.class}, max = 200, message = "최대 200자까지 입력 가능합니다")
 	private String replyContent;
 	@NotEmpty(groups = {ReplyCreateGroup.class}, message = "비밀번호를 입력하세요")
 	@Size(groups = {ReplyCreateGroup.class}, min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하로 입력해주세요")
 	private String replyPassword;
+	private String replySalt;
 	private String replyCreateDate;
 	private String replyModifyDate;
 	private String replyDeleteDate;
@@ -53,6 +54,12 @@ public class ReplyVO {
 	}
 	public void setReplyPassword(String replyPassword) {
 		this.replyPassword = replyPassword;
+	}
+	public String getReplySalt() {
+		return replySalt;
+	}
+	public void setReplySalt(String replySalt) {
+		this.replySalt = replySalt;
 	}
 	public String getReplyCreateDate() {
 		return replyCreateDate;

@@ -24,6 +24,11 @@ public class ReplyDAOImpl extends SqlSessionDaoSupport implements ReplyDAO {
 	}
 	
 	@Override
+	public ReplyVO getOneReplyByReplyId(String replyId) {
+		return getSqlSession().selectOne("getOneReplyByReplyId", replyId);
+	}
+	
+	@Override
 	public int getReplyCntByArticleId(String articleId) {
 		return getSqlSession().selectOne("getReplyCntByArticleId", articleId);
 	}

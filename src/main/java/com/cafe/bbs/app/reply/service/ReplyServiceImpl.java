@@ -8,16 +8,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cafe.bbs.app.reply.dao.ReplyDAO;
 import com.cafe.bbs.app.reply.vo.ReplyVO;
+import com.cafe.bbs.beans.SHA;
 
 @Service
 public class ReplyServiceImpl implements ReplyService {
 
 	@Autowired
 	private ReplyDAO replyDAO;
+	@Autowired
+	private SHA sha;
 	
 	@Override
 	public List<ReplyVO> getRepliesByArticleId(String articleId) {
 		return replyDAO.getRepliesByArticleId(articleId);
+	}
+	
+	@Override
+	public ReplyVO getOneReplyByReplyId(String replyId) {
+		return replyDAO.getOneReplyByReplyId(replyId);
 	}
 	
 	@Override
@@ -28,6 +36,11 @@ public class ReplyServiceImpl implements ReplyService {
 	@Transactional
 	@Override
 	public boolean createNewReply(ReplyVO replyVO) {
+		String salt = sha.generateSalt();
+		String password = replyVO.getReplyPassword();
+		String encryptedPassword = sha.getEncrypt(password, salt);
+		replyVO.setReplyPassword(encryptedPassword);
+		replyVO.setReplySalt(salt);
 		return replyDAO.createNewReply(replyVO) >0;
 	}
 	
@@ -41,5 +54,16 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	public boolean deleteOneReply(ReplyVO replyVO) {
 		return replyDAO.deleteOneReply(replyVO) >0;
+	}
+	
+	@Override
+	public boolean confirmReplyPassword(ReplyVO replyVO) {
+		String replyId = replyVO.getReplyId();
+		ReplyVO originReply = replyDAO.getOneReplyByReplyId(replyId);
+		String originPassword = originReply.getReplyPassword();
+		String salt = originReply.getReplySalt();
+		String userPassword = replyVO.getReplyPassword();
+		String encryptedPassword = sha.getEncrypt(userPassword, salt);
+		return originPassword.equals(encryptedPassword);
 	}
 }

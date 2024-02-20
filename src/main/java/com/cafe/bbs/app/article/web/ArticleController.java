@@ -32,6 +32,7 @@ import com.cafe.bbs.exceptions.IncorrectPasswordException;
 import com.cafe.bbs.exceptions.PageNotFoundException;
 import com.cafe.bbs.exceptions.RequestFailedException;
 
+
 @Controller
 public class ArticleController {
 	
@@ -88,7 +89,33 @@ public class ArticleController {
 		model.addAttribute("nextArticle", nextArticle);
 		return "articleOne";
 	}
-
+	
+	@PostMapping("/{boardUrl}/view")
+	public String getOneArticleWithModifyReply(@PathVariable String boardUrl
+										     , @RequestParam String articleId
+										     , @ModelAttribute ReplyVO replyVO
+										     , Model model) {
+		boolean isConfirmed = replyService.confirmReplyPassword(replyVO);
+		if (isConfirmed) {
+			ReplyVO targetReply = replyService.getOneReplyByReplyId(replyVO.getReplyId());
+			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
+			List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
+			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
+			NextArticleVO nextArticle = articleService.getBesideArticle(article);
+			BoardVO boardVO = boardService.getBoardVOById(article.getBoardId());
+			model.addAttribute("boardVO", boardVO);
+			model.addAttribute("articleVO", article);
+			model.addAttribute("replyList", replyList);
+			model.addAttribute("fileList", fileList);
+			model.addAttribute("nextArticle", nextArticle);
+			model.addAttribute("targetReply", targetReply);
+			return "articleOne";
+		} else {
+			logger.warn("Incorrce Password");
+			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
+		}
+	}
+	
 	@GetMapping("/{boardUrl}/write")
 	public String createNewArticle(@PathVariable String boardUrl
 								 , @RequestParam(name = "upperArticleId", required = false) String upperArticleId
@@ -127,6 +154,7 @@ public class ArticleController {
 			return "redirect:view?articleId="+articleId;
 		}
 		else {
+			logger.warn("Failed to write new article");
 			throw new RequestFailedException("게시글 등록에 실패하였습니다");
 		}
 	}
@@ -150,6 +178,7 @@ public class ArticleController {
 			}
 			return "articleMdfy";
 		} else {
+			logger.warn("Incorrce Password");
 			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}
@@ -182,6 +211,7 @@ public class ArticleController {
 			return "redirect:view?articleId="+articleId;
 		}
 		else {
+			logger.warn("Failed to modify an article");
 			throw new RequestFailedException("게시글 수정에 실패하였습니다");			
 		}
 	}
@@ -195,9 +225,11 @@ public class ArticleController {
 			if (isSuccess) {
 				return "redirect:/" +boardUrl;
 			} else {
+				logger.warn("Failed to delete an article");
 				throw new RequestFailedException("게시글 삭제에 실패하였습니다");
 			}
 		} else{
+			logger.warn("Incorrce Password");
 			throw new IncorrectPasswordException("잘못된 비밀번호입니다");
 		}
 	}

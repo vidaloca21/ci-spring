@@ -30,100 +30,92 @@
 			})
             $(".reply-delete").click(function() {
 				let replyId = $(this).closest(".reply-item").data("id");
-				let replyPW = $(this).parent().find(".replyPW").val();
+                let action = 'delete'
 				$("#modal-wrapper").removeClass("hidden")
 				$("#password-submit-btn").click(function() {
-					var isCorrect =  replyPW === $("#password-confirm").val()
-					if (isCorrect) {
-                        if (confirm("댓글을 삭제합니다")) {
-                            let deleteForm = $('<form></form>')
-                            deleteForm.attr("action", "/reply/delete")
-                            deleteForm.attr("method", "post")
-                            let replyIdDom = $('<input type="text"/>')
-                            replyIdDom.attr("name", "replyId")
-                            replyIdDom.val(replyId)
-                            let articleIdDom = $('<input type="text"/>')
-                            articleIdDom.attr("name", "articleId")
-                            let urlDom = $('<input type="text"/>')
-                            urlDom.attr("name", "currentUrl")
-                            urlDom.val(currentUrl);
-                            deleteForm.append(replyIdDom)
-                            deleteForm.append(articleIdDom)
-                            deleteForm.append(urlDom)
-                            $("body").append(deleteForm)
-                            deleteForm.submit();
-                        } else {
-							location.reload();
-						}
-					} else {
-						alert("잘못된 비밀번호입니다!")
-						location.reload();
-					}
-				})
-            })
-            $(".reply-modify").click(function() {
-				let replyId = $(this).closest(".reply-item").data("id");
-				let replyPW = $(this).parent().find(".replyPW").val();
-                let replyWriter = $(this).closest(".reply-item").find(".user-nickname").text();
-                let replyContent = $(this).closest(".reply-item").find(".reply-content").text();
-                $("#modify-writer").val(replyWriter)
-                $("#modify-content").val(replyContent)
-				$("#modal-wrapper").removeClass("hidden")
-				$("#password-submit-btn").click(function() {
-					var isCorrect =  replyPW === $("#password-confirm").val()
-					if (isCorrect) {
-                        $("#modal-password").addClass("hidden")
-                        $("#modal-modify").removeClass("hidden")
-                            let replyIdDom = $('<input type="hidden"/>')
-                            replyIdDom.attr("name", "replyId")
-                            replyIdDom.val(replyId)
-                            $("#modify-form").append(replyIdDom)
-                            let urlDom = $('<input type="hidden"/>')
-                            urlDom.attr("name", "currentUrl")
-                            urlDom.val(currentUrl);
-                            $("#modify-form").append(urlDom)
-					} else {
-						alert("잘못된 비밀번호입니다!")
-						location.reload();
-					}
+                    replyPasswordHandler(replyId, action, currentUrl);
 				})
             })
 
-            $("#modify-submit").click(function() {
-				if(confirm("댓글을 수정합니다")) {
-            		$("#input-current-url").val(currentUrl)
-	                $("#modify-form").submit()
-				}
+            $(".reply-modify").click(function() {
+                let replyId = $(this).closest(".reply-item").data("id");
+                let action = 'modify'
+				$("#modal-wrapper").removeClass("hidden")
+				$("#password-submit-btn").click(function() {
+                    replyPasswordHandler(replyId, action, currentUrl);
+				})
+            })
+
+            $("#reply-submit").click(function() {
+                $("#input-current-url").val(currentUrl)
+                let action = $("#reply-form-action").val();
+                replySubmitHandler(action);
             })
             
-            $("#reply-submit").click(function() {
-				var isValid = checkValidReply();
-				if (isValid.result) {
-        			$("#input-current-url").val(currentUrl)
-					$("#reply-form").submit()
-				} else {
-					alert(isValid.msg)
-				}
-				
-            })
 		})
-		
-		function articleHandler(articleId, action) {
-            let articleForm = $('<form></form>')
+
+
+        
+        function replySubmitHandler(action) {
+            var isValid;
+            if (action == 'write') {
+                isValid = checkValidReply();
+                if (isValid.result) {
+                    $("#reply-form").attr("action", "/reply/write")
+                    $("#reply-form").submit()
+                } else {
+                    alert(isValid.msg)
+                }
+            } else if (action == 'modify') {
+                isValid = checkValidReplyContent();
+                if (isValid.result) {
+                    $("#reply-form").attr("action", '/reply/modify.do')
+                    $("#reply-form").submit()
+                } else {
+                    alert(isValid.msg)
+                }
+            }
+        }
+
+        function replyPasswordHandler(replyId, action, currentUrl) {
+            let replyForm = $("#modal-password-form")
+            replyForm.attr("method", "post")
+
+            let replyIdDom = $('<input type="hidden"/>')
+            replyIdDom.attr("name", "replyId")
+            replyIdDom.val(replyId)
+            replyForm.append(replyIdDom)
+
+            let replyPwDom = $("#password-confirm")
+            replyPwDom.attr("name", "replyPassword")
+
+            if (action == 'modify') {
+                replyForm.attr("action", currentUrl)
+            } else if (action == 'delete') {
+                replyForm.attr("action", "/reply/delete")
+
+                let urlDom = $('<input type="hidden"/>')
+                urlDom.attr("name", "currentUrl")
+                urlDom.val(currentUrl);
+                replyForm.append(urlDom)
+            }
+
+            replyForm.submit()
+        }
+
+        function articleHandler(articleId, action) {
+            let articleForm = $("#modal-password-form")
             articleForm.attr("action", action)
             articleForm.attr("method", "post")
             let articleIdDom = $('<input type="hidden"/>')
             articleIdDom.attr("name", "articleId")
             articleIdDom.val(articleId);
-            let articlePwDom = $('<input type="password"/>')
-            articlePwDom.attr("name", "articlePassword")
-            articlePwDom.val($("#password-confirm").val());
             articleForm.append(articleIdDom)
-            articleForm.append(articlePwDom)
-            $("body").append(articleForm)
+            let articlePwDom = $("#password-confirm")
+            articlePwDom.attr("name", "articlePassword")
             articleForm.submit()
 		}
-        
+
         function checkValidReply() {
 			var memName = $("#member-name").val();
 			var repPassword = $("#reply-password").val();
@@ -152,6 +144,20 @@
 				}
 			}
 		}
+
+        function checkValidReplyContent() {
+            var repContent = $("#reply-write").val();
+            if(repContent) {
+                if (repContent.length > 200) {
+                    return {result: false, msg:"댓글 내용은 최대 200자까지 입력 가능합니다"}
+                } else {
+                    return {result: true, msg:"성공"};
+                }
+            } else {
+                return {result: false, msg:"댓글 내용을 입력해주세요"}
+            }
+
+        }
 	</script>
 </head>
 <body>
@@ -205,7 +211,6 @@
                                 </th:block>
                             </ul>
                             <ul class="flex-row add-delete">
-                                <input type="hidden" class="replyPW" th:value="${replyVO.replyPassword}">
                                 <li class="reply-modify pointer">수정</li>
                                 <li class="reply-delete pointer">삭제</li>
                             </ul>
@@ -215,16 +220,27 @@
                 </div>
                 <div id="reply-write-wrapper">
                     <h5>댓글 쓰기</h5>
-	                <form th:action="@{/reply/write}" th:object="${replyVO}" method="post" id="reply-form">
+	                <form th:object="${replyVO}" method="post" id="reply-form">
 	                    <div id="replies-write">
-	                        <div class="flex-col">
+	                        <div class="flex-col" th:if="${targetReply} == null">
 	                            <input type="text" name="memberName" id="member-name" placeholder="댓글 작성자">
-	                            <input type="password" name="replyPassword" id="reply-password" placeholder="비밀번호">
+                                <input type="password" name="replyPassword" id="reply-password" placeholder="비밀번호">
 	                        </div>
-	                        <textarea name="replyContent" id="reply-write" placeholder="댓글 내용"></textarea>
+	                        <div class="flex-col" th:unless="${targetReply} == null">
+	                            <input type="text" name="memberName" id="member-name" placeholder="댓글 작성자" th:value="${targetReply.memberName}" readonly>
+                                <input type="password" name="replyPassword" id="reply-password" placeholder="비밀번호" th:value="${targetReply.replyPassword}" readonly>
+	                        </div>
+	                        <textarea name="replyContent" id="reply-write" placeholder="댓글 내용" th:text="${targetReply} ? ${targetReply.replyContent} : ''"></textarea>
 	                        <input type="hidden" name="articleId" th:value="${articleVO.articleId}">
 	                        <input type="hidden" name="currentUrl" id="input-current-url">
-	                        <input id="reply-submit" class="btn-green" type="button" value="등록">
+	                        <input type="hidden" id="reply-form-action" th:value="${targetReply} ? 'modify' : 'write'">
+	                        <th:block th:if="${targetReply} == null">
+                                <input id="reply-submit" class="btn-green" type="button" value="등록">
+							</th:block>
+	                        <th:block th:unless="${targetReply} == null">
+                                <input type="hidden"name="replyId" th:value="${targetReply.replyId}">
+								<input id="reply-submit" class="btn-green" type="button" value="수정">
+							</th:block>
 	                    </div>
 	                </form>
                 </div>
@@ -251,27 +267,17 @@
             </div>
         </div>
     </div>
+
+
     <div id="modal-wrapper" class="hidden">
-        <div id="modal-password" class="flex-col">
-            <span class="close">❌</span>
-            <h3>비밀번호 확인</h3>
-            <input type="password" name="password-confirm" id="password-confirm" />
-            <button id="password-submit-btn" class="btn-green">확인</button>
-        </div>
-        <div id="modal-modify" class="hidden">
-            <span class="close">❌</span>
-            <form th:action="@{/reply/modify}" th:object="${replyVO}" method="post" id="modify-form">
-                <div id="replies-modify">
-                    <div class="flex-col">
-                        <h5>댓글 수정</h5>
-                        <input type="text" name="memberName" id="modify-writer" placeholder="댓글 작성자" readonly>
-                    </div>
-                    <textarea name="replyContent" id="modify-content" placeholder="댓글 내용"></textarea>
-                    <input type="hidden" name="articleId" th:value="${articleVO.articleId}">
-                    <button id="modify-submit" class="btn-green" type="button">등록</button>
-                </div>
-            </form>
-        </div>
+        <form id="modal-password-form">
+            <div id="modal-password" class="flex-col">
+                <span class="close">❌</span>
+                <h3>비밀번호 확인</h3>
+                <input type="password" id="password-confirm" />
+                <button id="password-submit-btn" class="btn-green">확인</button>
+            </div>
+        </form>
     </div>
 </body>
 </html>
