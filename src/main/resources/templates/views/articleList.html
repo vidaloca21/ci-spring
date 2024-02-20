@@ -55,7 +55,7 @@
 							<th:block th:if="${articleVO.level} > 1">
 								<i class="fa-solid fa-l upper-icon"></i>
 							</th:block>
-							<a th:href="@{|/${boardVO.boardUrl}/view|(articleId=${articleVO.articleId})}" th:text="${articleVO.articleTitle}"></a>
+							<a th:href="@{|/${boardVO.boardUrl}/view/${articleVO.articleId}|}" th:text="${articleVO.articleTitle}"></a>
 							<span class="reply-cnt" th:text="|[${articleVO.replyCnt}]|"></span>
 						</td>
                         <td th:text="${articleVO.memberName}"></td>

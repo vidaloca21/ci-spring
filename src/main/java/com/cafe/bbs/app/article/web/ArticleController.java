@@ -2,6 +2,8 @@ package com.cafe.bbs.app.article.web;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,7 @@ import com.cafe.bbs.app.article.vo.validategroup.ArticleCreateGroup;
 import com.cafe.bbs.app.article.vo.validategroup.ArticleModifyGroup;
 import com.cafe.bbs.app.attachment.service.AttachmentService;
 import com.cafe.bbs.app.attachment.vo.AttachmentVO;
+import com.cafe.bbs.app.attachment.web.AttachmentController;
 import com.cafe.bbs.app.board.service.BoardService;
 import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
@@ -35,6 +38,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class ArticleController {
 	
+	private final static Logger logger = LoggerFactory.getLogger(AttachmentController.class);
 	@Autowired
 	private ArticleService articleService;
 	@Autowired
@@ -75,9 +79,9 @@ public class ArticleController {
 	 * 게시글 단건조회 controller
 	 * 게시글 정보를 불러오지 못했을 경우 PageNotFoundException을 반환
 	 */
-	@GetMapping("/{boardUrl}/view")
+	@GetMapping("/{boardUrl}/view/{articleId}")
 	public String getOneArticle(@PathVariable String boardUrl
-			  				  , @RequestParam String articleId
+			  				  , @PathVariable String articleId
 			  				  , Model model) {
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId, true);
 		if (article == null) {
@@ -102,9 +106,9 @@ public class ArticleController {
 	 * 비밀번호가 일치하면 수정할 댓글의 원본 정보를 함께 반환
 	 * 비밀번호가 일치하지 않으면 IncorrectPasswordException 반환
 	 */
-	@PostMapping("/{boardUrl}/view")
+	@PostMapping("/{boardUrl}/view/{articleId}")
 	public String getOneArticleWithModifyReply(@PathVariable String boardUrl
-										     , @RequestParam String articleId
+										     , @PathVariable String articleId
 										     , @ModelAttribute ReplyVO replyVO
 										     , HttpServletRequest request
 						  					 , Model model) {
@@ -180,7 +184,7 @@ public class ArticleController {
 		boolean isSuccess = articleService.createNewArticle(articleVO, attachFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
-			return "redirect:view?articleId="+articleId;
+			return "redirect:view/"+articleId;
 		}
 		else {
 			throw new RequestFailedException("게시글 등록에 실패하였습니다");
@@ -254,7 +258,7 @@ public class ArticleController {
 		boolean isSuccess = articleService.modifyArticle(articleVO, attachFiles, deleteFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
-			return "redirect:view?articleId="+articleId;
+			return "redirect:view/"+articleId;
 		}
 		else {
 			throw new RequestFailedException("게시글 수정에 실패하였습니다");			

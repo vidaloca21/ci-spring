@@ -15,7 +15,7 @@
 	<div th:replace="~{./boardNav :: gnv}"></div>
     <div id="container">
         <div id="article-wrapper">
-            <div id="article" th:data-articleid="${articleVO.articleId}">
+            <div id="article" th:data-articleid="${articleVO.articleId}" th:data-boardurl="${boardVO.boardUrl}">
                 <div id="article-title">
                     <h3 th:text="${articleVO.articleTitle}">제목입니다</h3>
                     <div class="flex-row">
@@ -101,14 +101,14 @@
                     <th:block th:if="${nextArticle.nextArticleId} == null">
 						<span>게시글이 존재하지 않습니다</span>
 					</th:block>
-                    <a th:href="@{|/${boardVO.boardUrl}/view?articleId=${nextArticle.nextArticleId}|}" th:text="${nextArticle.nextArticleTitle}" class="font-bold">다음 글의 제목입니다</a>
+                    <a th:href="@{|/${boardVO.boardUrl}/view/${nextArticle.nextArticleId}|}" th:text="${nextArticle.nextArticleTitle}" class="font-bold">다음 글의 제목입니다</a>
                 </div>
                 <div>
                     <span>이전</span>
                     <th:block th:if="${nextArticle.prevArticleId} == null">
 						<span>게시글이 존재하지 않습니다</span>
 					</th:block>
-                    <a th:href="@{|/${boardVO.boardUrl}/view?articleId=${nextArticle.prevArticleId}|}" th:text="${nextArticle.prevArticleTitle}" class="font-bold">이전 글의 제목입니다</a>
+                    <a th:href="@{|/${boardVO.boardUrl}/view/${nextArticle.prevArticleId}|}" th:text="${nextArticle.prevArticleTitle}" class="font-bold">이전 글의 제목입니다</a>
                 </div>
             </div>
             <div id="" class="flex-row flex-end article-btn-group">

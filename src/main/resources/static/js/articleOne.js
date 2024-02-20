@@ -1,6 +1,7 @@
 const pageUtil = {
     articleId: '',
-
+	boardurl: '',
+	
     replySubmitHandler: function(action) {
         var isValid;
         if (action == 'write') {
@@ -47,7 +48,11 @@ const pageUtil = {
     
     articleHandler: function(action) {
         let articleForm = $("#modal-password-form")
-        articleForm.attr("action", action)
+        if (action == "modify") {
+	        articleForm.attr("action", "/"+this.boardurl+"/modify")
+		} else if (action == "delete") {
+    	    articleForm.attr("action", "/"+this.boardurl+"/delete")
+		}
         articleForm.attr("method", "post")
         let articleIdDom = $('<input type="hidden"/>')
         articleIdDom.attr("name", "articleId")
@@ -104,6 +109,7 @@ const pageUtil = {
 
 $().ready(function() {
     pageUtil.articleId = $("#article").data("articleid")
+    pageUtil.boardurl = $("#article").data("boardurl")
 
     $(".close").click(function() {
         location.reload();
