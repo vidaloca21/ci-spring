@@ -10,6 +10,17 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/articleWrite.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+		$().ready(function() {
+			$("#input-flie").change(function() {
+				for (var file of $("#input-flie")[0].files) {
+					$("#file-preview").append(`<p class='file-item'>${file.name}</p>`)
+				}
+			})
+		})
+	</script>
+    
 </head>
 <body>
     <div th:replace="~{./boardNav :: gnv}"></div>
@@ -41,8 +52,12 @@
                     <span class="msg-error" th:errors="*{articleContent}"></span>
                     <div id="article-file">
     	                <h5>첨부파일</h5>
+                        <label for="input-flie" class="file-upload">
+                            파일 업로드하기
+                        </label>
 		                <input type="file" name="attachFiles" id="input-flie" multiple>
                     </div>
+	                <div id="file-preview"></div>
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>

@@ -75,11 +75,6 @@ public class ArticleServiceImpl implements ArticleService {
 			}
 			AttachmentVO attachmentVO = new AttachmentVO();
 			attachmentVO.setArticleId(articleVO.getArticleId());
-			// 파일명이 최대 길이보다 크다면 중단
-			if (storedFile.getFileName().length() >100) {
-				successCnt = 0;
-				break;
-			}
 			attachmentVO.setOriginFilename(storedFile.getFileName());
 			attachmentVO.setUuidFilename(storedFile.getRealFileName());
 			successCnt += attachmentDAO.storeNewFile(attachmentVO);
@@ -124,11 +119,6 @@ public class ArticleServiceImpl implements ArticleService {
 			}
 			AttachmentVO attachmentVO = new AttachmentVO();
 			attachmentVO.setArticleId(articleVO.getArticleId());
-			// 파일명이 최대 길이보다 크다면 중단
-			if (storedFile.getFileName().length() >100) {
-				successCnt = 0;
-				break;
-			}
 			attachmentVO.setOriginFilename(storedFile.getFileName());
 			attachmentVO.setUuidFilename(storedFile.getRealFileName());
 			successCnt += attachmentDAO.storeNewFile(attachmentVO);
