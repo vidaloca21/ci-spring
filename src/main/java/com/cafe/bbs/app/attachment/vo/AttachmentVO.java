@@ -1,9 +1,14 @@
 package com.cafe.bbs.app.attachment.vo;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class AttachmentVO {
 
 	private String attachmentId;
 	private String articleId;
+	@NotBlank
+	@Size(max = 100)
 	private String originFilename;
 	private String uuidFilename;
 	private String uploadDate;

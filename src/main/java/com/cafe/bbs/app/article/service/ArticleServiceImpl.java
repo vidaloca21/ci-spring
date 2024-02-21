@@ -14,7 +14,6 @@ import com.cafe.bbs.app.article.vo.NextArticleVO;
 import com.cafe.bbs.app.article.vo.SearchArticleVO;
 import com.cafe.bbs.app.attachment.dao.AttachmentDAO;
 import com.cafe.bbs.app.attachment.vo.AttachmentVO;
-import com.cafe.bbs.app.reply.dao.ReplyDAO;
 import com.cafe.bbs.beans.FileHandler;
 import com.cafe.bbs.beans.FileHandler.StoredFile;
 import com.cafe.bbs.beans.SHA;
@@ -27,8 +26,6 @@ public class ArticleServiceImpl implements ArticleService {
 	@Autowired
 	private AttachmentDAO attachmentDAO;
 	@Autowired
-	private ReplyDAO replyDAO;
-	@Autowired
 	private FileHandler fileHandler;
 	@Autowired
 	private SHA sha;
@@ -36,25 +33,21 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public List<ArticleVO> getAllArticle(SearchArticleVO searchArticleVO) {
 		List<ArticleVO> articleList = articleDAO.searchArticle(searchArticleVO);
-		for (ArticleVO article : articleList) {
-			String articleId = article.getArticleId();
-			int replyCnt = replyDAO.getReplyCntByArticleId(articleId);
-			int fileCnt = attachmentDAO.getFileCntByArticleId(articleId);
-			article.setReplyCnt(replyCnt);
-			article.setFileCnt(fileCnt);
-		}
-		searchArticleVO.setPageCount(articleDAO.getArticleCount(searchArticleVO));
-		
 		return articleList;
 	}
 	
+	@Override
+	public int getArticleCount(SearchArticleVO searchArticleVO) {
+		return articleDAO.getArticleCount(searchArticleVO);
+	}
+	
+	@Transactional
 	@Override
 	public ArticleVO getOneArticleByArticleId(String articleId, boolean isIncrease) {
 		if (isIncrease) {
 			articleDAO.increaseViewCount(articleId);
 		}
 		ArticleVO articleVO = articleDAO.getOneArticleByArticleId(articleId);
-		
 		return articleVO;
 	}
 	
@@ -82,6 +75,11 @@ public class ArticleServiceImpl implements ArticleService {
 			}
 			AttachmentVO attachmentVO = new AttachmentVO();
 			attachmentVO.setArticleId(articleVO.getArticleId());
+			// 파일명이 최대 길이보다 크다면 중단
+			if (storedFile.getFileName().length() >100) {
+				successCnt = 0;
+				break;
+			}
 			attachmentVO.setOriginFilename(storedFile.getFileName());
 			attachmentVO.setUuidFilename(storedFile.getRealFileName());
 			successCnt += attachmentDAO.storeNewFile(attachmentVO);
@@ -126,6 +124,11 @@ public class ArticleServiceImpl implements ArticleService {
 			}
 			AttachmentVO attachmentVO = new AttachmentVO();
 			attachmentVO.setArticleId(articleVO.getArticleId());
+			// 파일명이 최대 길이보다 크다면 중단
+			if (storedFile.getFileName().length() >100) {
+				successCnt = 0;
+				break;
+			}
 			attachmentVO.setOriginFilename(storedFile.getFileName());
 			attachmentVO.setUuidFilename(storedFile.getRealFileName());
 			successCnt += attachmentDAO.storeNewFile(attachmentVO);
@@ -174,7 +177,6 @@ public class ArticleServiceImpl implements ArticleService {
 		String salt = originArticle.getArticleSalt();
 		String userPassword = articleVO.getArticlePassword();
 		String encryptedPassword = sha.getEncrypt(userPassword, salt);
-		
 		return originPassword.equals(encryptedPassword);
 	}
 	

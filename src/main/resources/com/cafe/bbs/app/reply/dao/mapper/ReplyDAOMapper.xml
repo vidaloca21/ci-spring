@@ -11,13 +11,13 @@
 			 , ARTICLE_ID
 			 , MEMBER_NAME
 			 , REPLY_CONTENT
-			 , REPLY_PASSWORD
 			 , REPLY_CREATE_DATE
 			 , REPLY_MODIFY_DATE
 		  FROM REPLY
 		 WHERE 1=1
 		   AND ARTICLE_ID = #{_parameter}
 		   AND REPLY_DELETE_DATE IS NULL
+		 ORDER BY REPLY_ID
 	</select>
 	
 	<select id="getOneReplyByReplyId"

@@ -20,11 +20,4 @@ public interface AttachmentService {
 	 */
 	public AttachmentVO getOneAttachment(String attachmentId);
 	
-	/**
-	 * 개별 파일의 정보를 DB에서 삭제한다
-	 * @param attachmentId 삭제할 파일정보ID
-	 * @return DB 삭제 성공 여부
-	 */
-	public boolean deleteAttachment(String attachmentId);
-
 }

@@ -18,6 +18,13 @@ public interface ArticleService {
 	public List<ArticleVO> getAllArticle(SearchArticleVO searchArticleVO);
 	
 	/**
+	 * 사용자 검색 결과로 표출될 게시글의 수를 가져온다
+	 * @param searchArticleVO 사용자 검색 정보
+	 * @return 게시글의 수
+	 */
+	public int getArticleCount(SearchArticleVO searchArticleVO);
+	
+	/**
 	 * 게시글 단건의 정보를 조회한다
 	 * @param articleId 게시글ID
 	 * @param isIncrease 조회수를 증가시킬지 여부
@@ -31,6 +38,7 @@ public interface ArticleService {
 	 * @param attachFiles 게시글에 첨부된 파일 목록
 	 * @return DB에 insert 성공 여부
 	 */
+	
 	public boolean createNewArticle(ArticleVO articleVO, List<MultipartFile> attachFiles);
 	
 	/**

@@ -24,7 +24,6 @@ import com.cafe.bbs.app.article.vo.validategroup.ArticleCreateGroup;
 import com.cafe.bbs.app.article.vo.validategroup.ArticleModifyGroup;
 import com.cafe.bbs.app.attachment.service.AttachmentService;
 import com.cafe.bbs.app.attachment.vo.AttachmentVO;
-import com.cafe.bbs.app.attachment.web.AttachmentController;
 import com.cafe.bbs.app.board.service.BoardService;
 import com.cafe.bbs.app.board.vo.BoardVO;
 import com.cafe.bbs.app.reply.service.ReplyService;
@@ -34,19 +33,18 @@ import com.cafe.bbs.exceptions.RequestFailedException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
 @Controller
 public class ArticleController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(AttachmentController.class);
+	private final static Logger logger = LoggerFactory.getLogger(ArticleController.class);
 	@Autowired
 	private ArticleService articleService;
-	@Autowired
-	private AttachmentService attachmentService;
 	@Autowired
 	private BoardService boardService;
 	@Autowired
 	private ReplyService replyService;
+	@Autowired
+	private AttachmentService attachmentService;
 	
 	@GetMapping("")
 	public String getIntro() {
@@ -65,9 +63,9 @@ public class ArticleController {
 		if (boardVO == null) {
 			throw new PageNotFoundException("페이지가 존재하지 않습니다");
 		}
-		if (searchArticleVO.getBoardId() == null) {
-			searchArticleVO.setBoardId(boardVO.getBoardId());
-		}
+		searchArticleVO.setBoardId(boardVO.getBoardId());
+		searchArticleVO.setPageCount(articleService.getArticleCount(searchArticleVO));
+
 		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
@@ -132,6 +130,7 @@ public class ArticleController {
 			String msg = "잘못된 비밀번호입니다";
 			model.addAttribute("msg", msg);
 			model.addAttribute("nextUrl", nextUrl);
+			logger.info("IncorrectPassword");
 			return "error/sendNext";
 		}
 	}
@@ -221,6 +220,7 @@ public class ArticleController {
 			String msg = "잘못된 비밀번호입니다";
 			model.addAttribute("msg", msg);
 			model.addAttribute("nextUrl", nextUrl);
+			logger.info("IncorrectPassword");
 			return "error/sendNext";
 		}
 	}
@@ -290,6 +290,7 @@ public class ArticleController {
 			String msg = "잘못된 비밀번호입니다";
 			model.addAttribute("msg", msg);
 			model.addAttribute("nextUrl", nextUrl);
+			logger.info("IncorrectPassword");
 			return "error/sendNext";
 		}
 	}

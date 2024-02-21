@@ -33,8 +33,7 @@ public class AttachmentController {
 		AttachmentVO attachmentVO = attachmentService.getOneAttachment(attachmentId);
 		File storedFile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
 		ResponseEntity<Resource> resource = fileHandler.getResponseEntity(storedFile, attachmentVO.getOriginFilename());
-		logger.info("statusCode: " + resource.getStatusCode());
-		logger.info("headers: " + resource.getHeaders());
+		logger.info("fileDownload: " + resource.getStatusCode());
 		return resource;
 	}
 
