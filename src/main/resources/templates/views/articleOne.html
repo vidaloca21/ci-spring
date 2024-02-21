@@ -35,6 +35,11 @@
                     </div>
                 </div>
                 <div id="article-content">
+					<th:block th:if="${!fileList.empty}">
+						<img th:each="file : ${fileList}" 
+						 	 th:if="${file.isImage} == 'Y'"
+							 th:src="@{|/file/${file.uuidFilename}|}" />
+					</th:block>
 					<p th:utext="${articleVO.articleContent}"></p>
                 </div>
                 <th:block th:if="${!fileList.empty}">

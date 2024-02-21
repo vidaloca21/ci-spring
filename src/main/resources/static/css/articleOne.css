@@ -39,6 +39,11 @@
     border-top: 1px solid #7A9E9F;
     min-height: 240px;
     font-size: 14px;
+    > img {
+		width: 80%;
+		height: auto;
+		overflow: hidden;
+	}
 }
 /* 첨부파일 */
 #article-file {

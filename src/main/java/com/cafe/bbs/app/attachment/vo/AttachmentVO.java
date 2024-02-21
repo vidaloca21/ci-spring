@@ -12,7 +12,7 @@ public class AttachmentVO {
 	private String originFilename;
 	private String uuidFilename;
 	private String uploadDate;
-	
+	private String isImage;
 	
 	public String getAttachmentId() {
 		return attachmentId;
@@ -43,6 +43,12 @@ public class AttachmentVO {
 	}
 	public void setUploadDate(String uploadDate) {
 		this.uploadDate = uploadDate;
+	}
+	public String getIsImage() {
+		return isImage;
+	}
+	public void setIsImage(String isImage) {
+		this.isImage = isImage;
 	}
 	
 }
