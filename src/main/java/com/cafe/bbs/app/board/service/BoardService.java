@@ -1,5 +1,7 @@
 package com.cafe.bbs.app.board.service;
 
+import java.util.List;
+
 import com.cafe.bbs.app.board.vo.BoardVO;
 
 public interface BoardService {
@@ -17,5 +19,7 @@ public interface BoardService {
 	 * @return 게시판 정보
 	 */
 	public BoardVO getBoardVOById(String boardId);
+	
+	public List<BoardVO> getAllBoard();
 	
 }

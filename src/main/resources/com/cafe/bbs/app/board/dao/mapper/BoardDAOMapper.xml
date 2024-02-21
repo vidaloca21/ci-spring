@@ -25,4 +25,12 @@
 		   AND BOARD_ID = #{_parameter}
 	</select>
 	
+	<select id="getAllBoard"
+			resultType="com.cafe.bbs.app.board.vo.BoardVO">
+		SELECT BOARD_ID
+			 , BOARD_NAME
+			 , BOARD_URL
+		  FROM BOARD
+	</select>
+	
 </mapper>

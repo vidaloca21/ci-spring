@@ -20,9 +20,8 @@
         margin-left: 7px;
     }
 }
-/* #article-writer 삭제 */
-#article-writer {
-    width: 100%;
+#article-writer,
+#article-boardInfo {
     margin-top: 15px;
     padding: 10px;
     font-size: 14px;

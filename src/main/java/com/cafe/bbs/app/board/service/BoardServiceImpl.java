@@ -1,5 +1,7 @@
 package com.cafe.bbs.app.board.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +22,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardVO getBoardVOById(String boardId) {
 		return boardDAO.getBoardVOById(boardId);
+	}
+	
+	@Override
+	public List<BoardVO> getAllBoard() {
+		return boardDAO.getAllBoard();
 	}
 }

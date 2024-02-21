@@ -81,14 +81,14 @@ public class ArticleController {
 	public String getOneArticle(@PathVariable String boardUrl
 			  				  , @PathVariable String articleId
 			  				  , Model model) {
+		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId, true);
-		if (article == null) {
+		if (boardVO == null || article == null || !article.getBoardId().equals(boardVO.getBoardId())) {
 			throw new PageNotFoundException("페이지가 존재하지 않습니다");
 		}
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
 		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 		NextArticleVO nextArticle = articleService.getBesideArticle(article);
-		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleVO", article);
 		model.addAttribute("replyList", replyList);
@@ -207,7 +207,9 @@ public class ArticleController {
 			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 			BoardVO boardVO = boardService.getBoardVO(boardUrl);
+			List<BoardVO> boardList = boardService.getAllBoard();
 			model.addAttribute("boardVO", boardVO);
+			model.addAttribute("boardList", boardList);
 			model.addAttribute("articleVO", article);
 			model.addAttribute("fileList", fileList);
 			if (article.getUpperArticleId() != null) {
@@ -241,12 +243,12 @@ public class ArticleController {
 							  , Model model
 			 				  , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles
 			 				  , @RequestParam(name = "deleteFiles", required = false) List<String> deleteFiles) {
+		BoardVO boardInfo = boardService.getBoardVOById(articleVO.getBoardId());
 		if (bindingResult.hasErrors()) {
 			String articleId = articleVO.getArticleId();
 			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
-			BoardVO boardVO = boardService.getBoardVO(boardUrl);
-			model.addAttribute("boardVO", boardVO);
+			model.addAttribute("boardVO", boardInfo);
 			model.addAttribute("articleVO", articleVO);
 			model.addAttribute("fileList", fileList);
 			if (article.getUpperArticleId() != null) {
@@ -258,7 +260,7 @@ public class ArticleController {
 		boolean isSuccess = articleService.modifyArticle(articleVO, attachFiles, deleteFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
-			return "redirect:view/"+articleId;
+			return "redirect:/"+boardInfo.getBoardUrl()+"/view/"+articleId;
 		}
 		else {
 			throw new RequestFailedException("게시글 수정에 실패하였습니다");			

@@ -154,6 +154,7 @@
 			parameterType="com.cafe.bbs.app.article.vo.ArticleMasterVO">
 		UPDATE ARTICLE_MASTER
 		   SET MEMBER_NAME = #{memberName}
+			 , BOARD_ID = #{boardId}
 			 , ARTICLE_MODIFY_DATE = SYSDATE
 		 WHERE ARTICLE_ID = #{articleId}
 	</update>

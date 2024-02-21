@@ -34,8 +34,15 @@
             <form th:action="@{modify.do}" th:object="${articleVO}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="articleId" th:value="${articleVO.articleId}" >
 				<div class="flex-col">
-	                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}" th:errorclass="input-error">
-                    <span class="msg-error" th:errors="*{memberName}"></span>
+                    <div class="flex-row space-bet">
+                        <div class="flex-col half">
+			                <input type="text" name="memberName" id="article-writer" placeholder="작성자 닉네임" th:value="${articleVO.memberName}" th:errorclass="input-error">
+		                    <span class="msg-error" th:errors="*{memberName}"></span>
+                        </div>
+                        <select class="half" name="boardId" id="article-boardInfo">
+							<option th:each="board : ${boardList}" th:value="${board.boardId}" th:text="${board.boardName}"></option>
+                        </select>
+                    </div>
 	                <input type="text" name="articleTitle" id="article-title" placeholder="제목을 입력하세요" th:value="${articleVO.articleTitle}" th:errorclass="input-error">
                     <span class="msg-error" th:errors="*{articleTitle}"></span>
 	                <textarea name="articleContent" id="article-content" placeholder="본문 내용을 입력하세요"  th:text="${articleVO.articleContent}" th:errorclass="input-error"></textarea>
