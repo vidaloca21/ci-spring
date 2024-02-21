@@ -20,6 +20,10 @@ public interface BoardService {
 	 */
 	public BoardVO getBoardVOById(String boardId);
 	
+	/**
+	 * 모든 게시판 목록을 가져온다
+	 * @return 게시판 목록
+	 */
 	public List<BoardVO> getAllBoard();
 	
 }

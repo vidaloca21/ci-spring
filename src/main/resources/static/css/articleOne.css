@@ -40,7 +40,7 @@
     min-height: 240px;
     font-size: 14px;
     > img {
-		width: 80%;
+		max-width: 100%;
 		height: auto;
 		overflow: hidden;
 	}

@@ -42,7 +42,7 @@ public class AttachmentController {
 	}
 
 	@GetMapping("/file/{filename}")
-	public ResponseEntity<byte[]> getPrdContentImg(@PathVariable String filename) {
+	public ResponseEntity<byte[]> getArticleImg(@PathVariable String filename) {
 		File storedFile = fileHandler.getStoredFile(filename);
         if (storedFile == null) {
             throw new IllegalArgumentException("파일이 존재하지 않습니다.");
