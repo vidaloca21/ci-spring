@@ -17,7 +17,7 @@ public class ReplyDAOImpl extends SqlSessionDaoSupport implements ReplyDAO {
 	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
 		super.setSqlSessionTemplate(sqlSessionTemplate);
 	}
-	
+
 	@Override
 	public List<ReplyVO> getRepliesByArticleId(String articleId) {
 		return getSqlSession().selectList("getRepliesByArticleId", articleId);

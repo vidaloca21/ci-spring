@@ -186,6 +186,7 @@ public class ArticleController {
 			return "redirect:view/"+articleId;
 		}
 		else {
+			logger.info("RequestFailed");
 			throw new RequestFailedException("게시글 등록에 실패하였습니다");
 		}
 	}
@@ -263,6 +264,7 @@ public class ArticleController {
 			return "redirect:/"+boardInfo.getBoardUrl()+"/view/"+articleId;
 		}
 		else {
+			logger.info("RequestFailed");
 			throw new RequestFailedException("게시글 수정에 실패하였습니다");			
 		}
 	}
@@ -285,6 +287,7 @@ public class ArticleController {
 			if (isSuccess) {
 				return "redirect:/" +boardUrl;
 			} else {
+				logger.info("RequestFailed");
 				throw new RequestFailedException("게시글 삭제에 실패하였습니다");
 			}
 		} else{
