@@ -58,6 +58,7 @@ public class ArticleController {
 	@GetMapping("/{boardUrl}")
 	public String getArticleList(@PathVariable String boardUrl
 							   , @ModelAttribute SearchArticleVO searchArticleVO
+							   , HttpServletRequest request
 							   , Model model) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		if (boardVO == null) {
@@ -67,6 +68,8 @@ public class ArticleController {
 		searchArticleVO.setPageCount(articleService.getArticleCount(searchArticleVO));
 
 		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
+		String nextUrl = (String)request.getHeader("REFERER");
+		model.addAttribute("nextUrl", nextUrl);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
@@ -80,6 +83,7 @@ public class ArticleController {
 	@GetMapping("/{boardUrl}/view/{articleId}")
 	public String getOneArticle(@PathVariable String boardUrl
 			  				  , @PathVariable String articleId
+							  , HttpServletRequest request
 			  				  , Model model) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId, true);
@@ -89,11 +93,13 @@ public class ArticleController {
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
 		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 		NextArticleVO nextArticle = articleService.getBesideArticle(article);
+		String nextUrl = (String)request.getHeader("REFERER");
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleVO", article);
 		model.addAttribute("replyList", replyList);
 		model.addAttribute("fileList", fileList);
 		model.addAttribute("nextArticle", nextArticle);
+		model.addAttribute("nextUrl", nextUrl);
 		return "articleOne";
 	}
 	
@@ -143,12 +149,15 @@ public class ArticleController {
 	@GetMapping("/{boardUrl}/write")
 	public String createNewArticle(@PathVariable String boardUrl
 								 , @RequestParam(name = "upperArticleId", required = false) String upperArticleId
+							     , HttpServletRequest request
 								 , Model model) {
 		if (upperArticleId != "") {
 			ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(upperArticleId, false);
 			model.addAttribute("upperArticleVO", upperArticleVO);
 		}
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
+		String nextUrl = (String)request.getHeader("REFERER");
+		model.addAttribute("nextUrl", nextUrl);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleVO", new ArticleVO());
 		return "articleWrite";
@@ -204,6 +213,8 @@ public class ArticleController {
 			  				  , Model model) {
 		boolean isConfirmed = articleService.confirmPassword(articleVO);
 		String articleId = articleVO.getArticleId();
+		String nextUrl = (String)request.getHeader("REFERER");
+		model.addAttribute("nextUrl", nextUrl);
 		if (isConfirmed) {
 			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
@@ -219,10 +230,8 @@ public class ArticleController {
 			}
 			return "articleMdfy";
 		} else {
-			String nextUrl = (String)request.getHeader("REFERER");
 			String msg = "잘못된 비밀번호입니다";
 			model.addAttribute("msg", msg);
-			model.addAttribute("nextUrl", nextUrl);
 			logger.info("IncorrectPassword");
 			return "error/sendNext";
 		}

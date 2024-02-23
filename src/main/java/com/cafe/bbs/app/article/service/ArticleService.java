@@ -70,4 +70,14 @@ public interface ArticleService {
 	 * @return 이전글과 다음글의 게시글 정보(ID, 제목
 	 */
 	public NextArticleVO getBesideArticle(ArticleVO articleVO);
+	
+	
+	/**
+	 * article.web.ArticleTest.java 전용
+	 * Pagination 테스트용 Dummy 게시글 upload 위해
+	 * MultipartFile 없이 게시글을 DB에 insert method overloading
+	 * @param articleVO
+	 * @return DB insert 성공 여부
+	 */
+	public boolean createNewArticle(ArticleVO articleVO);
 }

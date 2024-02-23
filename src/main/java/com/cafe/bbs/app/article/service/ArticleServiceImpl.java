@@ -174,4 +174,25 @@ public class ArticleServiceImpl implements ArticleService {
 	public NextArticleVO getBesideArticle(ArticleVO articleVO) {
 		return articleDAO.getBesideArticle(articleVO);
 	}
+	
+	
+	@Transactional
+	@Override
+	public boolean createNewArticle(ArticleVO articleVO) {
+		// 사용자가 입력한 비밀번호 암호화
+		String salt = sha.generateSalt();
+		String password = articleVO.getArticlePassword();
+		String encryptedPassword = sha.getEncrypt(password, salt);
+		articleVO.setArticlePassword(encryptedPassword);
+		articleVO.setArticleSalt(salt);
+		
+		// 게시글의 기본 정보 DB에 저장(ARTICLE_MASTER)
+		boolean isArticleInfoSuccess = articleDAO.createNewArticleInfo(articleVO) >0;
+		
+		// 게시글 정보 DB에 저장(ARTICLE)
+		boolean isArticleSuccess = articleDAO.createNewArticle(articleVO) >0;
+		
+		// 게시글 기본 정보 저장, 게시글 정보 저장, 파일 저장 성공 여부 반환
+		return isArticleInfoSuccess && isArticleSuccess;
+	}
 }

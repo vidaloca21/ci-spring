@@ -61,7 +61,7 @@
 	                <input type="submit" id="article-submit" class="btn-green" value="등록">
 				</div>
             </form>
-            <button type="button" class="btn-white" th:onclick="|location.href='@{|/${boardVO.boardUrl}|}'|">목록으로 돌아가기</button>
+            <button type="button" class="btn-white" th:onclick="|location.href='@{${nextUrl}}'|">이전으로 돌아가기</button>
         </div>
     </div>
     <script>
