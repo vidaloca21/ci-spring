@@ -32,6 +32,7 @@ import com.cafe.bbs.exceptions.PageNotFoundException;
 import com.cafe.bbs.exceptions.RequestFailedException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ArticleController {
@@ -55,10 +56,11 @@ public class ArticleController {
 	 * 게시글 목록(게시판) controller
 	 * 게시판 URL이 잘못되었을 경우 PageNotFoundException 반환
 	 */
-	@GetMapping("/{boardUrl}")
+	@GetMapping("/{boardUrl}/list")
 	public String getArticleList(@PathVariable String boardUrl
 							   , @ModelAttribute SearchArticleVO searchArticleVO
 							   , HttpServletRequest request
+							   , HttpSession session
 							   , Model model) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		if (boardVO == null) {
@@ -68,11 +70,11 @@ public class ArticleController {
 		searchArticleVO.setPageCount(articleService.getArticleCount(searchArticleVO));
 
 		List<ArticleVO> articleList = articleService.getAllArticle(searchArticleVO);
-		String nextUrl = (String)request.getHeader("REFERER");
-		model.addAttribute("nextUrl", nextUrl);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleList", articleList);
 		model.addAttribute("searchArticleVO", searchArticleVO);
+		String url = request.getQueryString() == null ? request.getRequestURI() :  request.getRequestURI() + "?" + request.getQueryString();
+		session.setAttribute("prevList", url);
 		return "articleList";
 	}
 	
@@ -84,6 +86,7 @@ public class ArticleController {
 	public String getOneArticle(@PathVariable String boardUrl
 			  				  , @PathVariable String articleId
 							  , HttpServletRequest request
+							  , HttpSession session
 			  				  , Model model) {
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
 		ArticleVO article = articleService.getOneArticleByArticleId(articleId, true);
@@ -93,13 +96,12 @@ public class ArticleController {
 		List<ReplyVO> replyList = replyService.getRepliesByArticleId(articleId);
 		List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
 		NextArticleVO nextArticle = articleService.getBesideArticle(article);
-		String nextUrl = (String)request.getHeader("REFERER");
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleVO", article);
 		model.addAttribute("replyList", replyList);
 		model.addAttribute("fileList", fileList);
 		model.addAttribute("nextArticle", nextArticle);
-		model.addAttribute("nextUrl", nextUrl);
+		session.setAttribute("prevArticle", request.getRequestURI());
 		return "articleOne";
 	}
 	
@@ -253,12 +255,14 @@ public class ArticleController {
 							  , Model model
 			 				  , @RequestParam(name = "attachFiles", required = false) List<MultipartFile> attachFiles
 			 				  , @RequestParam(name = "deleteFiles", required = false) List<String> deleteFiles) {
-		BoardVO boardInfo = boardService.getBoardVOById(articleVO.getBoardId());
+		BoardVO boardVO = boardService.getBoardVOById(articleVO.getBoardId());
 		if (bindingResult.hasErrors()) {
 			String articleId = articleVO.getArticleId();
 			ArticleVO article = articleService.getOneArticleByArticleId(articleId, false);
 			List<AttachmentVO> fileList = attachmentService.getAllFilesByArticleId(articleId);
-			model.addAttribute("boardVO", boardInfo);
+			List<BoardVO> boardList = boardService.getAllBoard();
+			model.addAttribute("boardVO", boardVO);
+			model.addAttribute("boardList", boardList);
 			model.addAttribute("articleVO", articleVO);
 			model.addAttribute("fileList", fileList);
 			if (article.getUpperArticleId() != null) {
@@ -270,7 +274,8 @@ public class ArticleController {
 		boolean isSuccess = articleService.modifyArticle(articleVO, attachFiles, deleteFiles);
 		if (isSuccess) {
 			String articleId = articleVO.getArticleId();
-			return "redirect:/"+boardInfo.getBoardUrl()+"/view/"+articleId;
+			String newBoardUrl = boardService.getBoardVOById(articleVO.getBoardId()).getBoardUrl();
+			return "redirect:/"+newBoardUrl+"/view/"+articleId;
 		}
 		else {
 			logger.info("RequestFailed");

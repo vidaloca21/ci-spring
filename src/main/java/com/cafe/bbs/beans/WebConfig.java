@@ -7,5 +7,5 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configurable
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
-
+	    
 }

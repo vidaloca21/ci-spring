@@ -34,4 +34,9 @@ public class AttachmentServiceImpl implements AttachmentService {
 		return attachmentDAO.getOneAttachment(attachmentId);
 	}
 	
+	@Override
+	public boolean imageUploader() {
+		return false;
+	}
+	
 }

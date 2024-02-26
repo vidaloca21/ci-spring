@@ -36,9 +36,9 @@
                 </div>
                 <div id="article-content">
 					<th:block th:if="${!fileList.empty}">
-						<img th:each="file : ${fileList}" 
+						<!--<img th:each="file : ${fileList}" 
 						 	 th:if="${file.isImage} == 'Y'"
-							 th:src="@{|/file/${file.uuidFilename}|}" />
+							 th:src="@{|/file/${file.uuidFilename}|}" />-->
 					</th:block>
 					<p th:utext="${articleVO.articleContent}"></p>
                 </div>
@@ -118,7 +118,7 @@
             </div>
             <div id="" class="flex-row flex-end article-btn-group">
                 <a th:href="@{|/${boardVO.boardUrl}/write?upperArticleId=${articleVO.articleId}|}" class="btn-green">답글 작성</a>
-                <a th:href="${nextUrl}" class="btn-white">목록</a>
+                <a th:href="${session.prevList}" class="btn-white">목록</a>
             </div>
         </div>
     </div>

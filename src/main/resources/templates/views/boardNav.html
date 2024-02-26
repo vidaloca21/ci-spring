@@ -4,9 +4,9 @@
     <div class="navbar-title flex-row">
         <span><a href="/">게시판</a></span>
         <div class="navbar-category flex-row">
-            <a href="/board" th:classappend="${boardVO.boardUrl} == 'board' ? 'activated' : ''">자유게시판</a>
-            <a href="/notice" th:classappend="${boardVO.boardUrl} == 'notice' ? 'activated' : ''">공지사항</a>
-            <a href="/shop" th:classappend="${boardVO.boardUrl} == 'shop' ? 'activated' : ''">Shop</a>
+            <a href="/board/list" th:classappend="${boardVO.boardUrl} == 'board' ? 'activated' : ''">자유게시판</a>
+            <a href="/notice/list" th:classappend="${boardVO.boardUrl} == 'notice' ? 'activated' : ''">공지사항</a>
+            <a href="/shop/list" th:classappend="${boardVO.boardUrl} == 'shop' ? 'activated' : ''">Shop</a>
         </div>
     </div>
 </div>

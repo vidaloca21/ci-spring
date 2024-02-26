@@ -63,7 +63,6 @@ public class ArticleServiceImpl implements ArticleService {
 		
 		// 게시글의 기본 정보 DB에 저장(ARTICLE_MASTER)
 		boolean isArticleInfoSuccess = articleDAO.createNewArticleInfo(articleVO) >0;
-		
 		// 사용자가 첨부한 파일의 개수와 DB에 실제 저장된 파일의 개수 비교
 		int fileCnt = attachFiles.size();
 		int successCnt = 0;
