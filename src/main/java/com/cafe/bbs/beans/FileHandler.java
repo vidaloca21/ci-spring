@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.core.io.InputStreamResource;
@@ -15,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cafe.bbs.app.attachment.vo.AttachmentVO;
 import com.cafe.bbs.exceptions.FileNotExistsException;
 
 public class FileHandler {
@@ -35,8 +40,8 @@ public class FileHandler {
 		this.enableObfuscationHideExt = enableObfuscationHideExt;
 	}
 
-	public File getStoredFile(String fileName) {
-		return new File(baseDir, fileName);
+	public File getStoredFile(String fileName, boolean isTemp) {
+		return new File(isTemp ? baseDir+"/temp" : baseDir, fileName);
 	}
 
 	public ResponseEntity<Resource> getResponseEntity(File downloadFile
@@ -63,13 +68,13 @@ public class FileHandler {
 					.body(resource);
 	}
 	
-	public StoredFile storeFile(MultipartFile multipartFile) {
+	public StoredFile storeFile(MultipartFile multipartFile, boolean isTemp) {
 		if (multipartFile == null || multipartFile.isEmpty()) {
 			return null;
 		}
 		String originalFileName = multipartFile.getOriginalFilename();
-		String fileName = getObfuscationFileName(originalFileName);
-		File storePath = new File(baseDir, fileName);
+		String fileName = isTemp ? originalFileName : getObfuscationFileName(originalFileName);
+		File storePath = new File(isTemp ? baseDir+"/temp" : baseDir, fileName);
 		if (!storePath.getParentFile().exists()) {
 			storePath.getParentFile().mkdirs();
 		}
@@ -79,6 +84,26 @@ public class FileHandler {
 			return null;
 		}
 		return new StoredFile(originalFileName, storePath);
+	}
+	
+	public List<AttachmentVO> transferTempFile(List<String> filenames) {
+		List<AttachmentVO> attachFiles = new ArrayList<>();
+		for (String fileName: filenames) {
+			AttachmentVO attachFile = new AttachmentVO();
+			File originFile = new File(baseDir+"/temp", fileName);
+			String newFileName = getObfuscationFileName(fileName);
+			File newFile = new File(baseDir, newFileName);
+			try {
+				Files.copy(originFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			attachFile.setOriginFilename(fileName);
+			attachFile.setUuidFilename(newFileName);
+			attachFiles.add(attachFile);
+			originFile.delete();
+		}
+		return attachFiles;
 	}
 	
 	private String getObfuscationFileName(String fileName) {

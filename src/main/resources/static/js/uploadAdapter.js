@@ -13,7 +13,7 @@ class UploadAdapter {
 
     _initRequest() {
         const xhr = this.xhr = new XMLHttpRequest();
-        xhr.open('post', 'http://localhost:8000/api/image/upload', true);
+        xhr.open('post', '/api/image/upload', true);
         xhr.responseType = 'json';
     }
 
@@ -30,7 +30,8 @@ class UploadAdapter {
                 return reject( response && response.error ? response.error.message : genericErrorText );
             }
             resolve({
-                default: response.url //업로드 된 파일 주소
+                default: response.url, //업로드 된 파일 주소
+                alt: response.filename,
             })
         })
     }
@@ -39,5 +40,11 @@ class UploadAdapter {
         const data = new FormData()
         data.append('upload', file)
         this.xhr.send(data)
+    }
+}
+
+function MyCustomUploadAdapterPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+        return new UploadAdapter(loader)
     }
 }

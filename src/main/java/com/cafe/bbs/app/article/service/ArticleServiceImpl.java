@@ -14,6 +14,7 @@ import com.cafe.bbs.app.article.vo.NextArticleVO;
 import com.cafe.bbs.app.article.vo.SearchArticleVO;
 import com.cafe.bbs.app.attachment.dao.AttachmentDAO;
 import com.cafe.bbs.app.attachment.vo.AttachmentVO;
+import com.cafe.bbs.beans.ArticleImageParser;
 import com.cafe.bbs.beans.FileHandler;
 import com.cafe.bbs.beans.FileHandler.StoredFile;
 import com.cafe.bbs.beans.SHA;
@@ -29,6 +30,8 @@ public class ArticleServiceImpl implements ArticleService {
 	private FileHandler fileHandler;
 	@Autowired
 	private SHA sha;
+	@Autowired
+	private ArticleImageParser articleImageParser; 
 	
 	@Override
 	public List<ArticleVO> getAllArticle(SearchArticleVO searchArticleVO) {
@@ -63,11 +66,21 @@ public class ArticleServiceImpl implements ArticleService {
 		
 		// 게시글의 기본 정보 DB에 저장(ARTICLE_MASTER)
 		boolean isArticleInfoSuccess = articleDAO.createNewArticleInfo(articleVO) >0;
+		
+		// 게시글 본문 이미지 transfer
+		List<String> tempFiles = articleImageParser.getAttachedImages(articleVO.getArticleContent());
+		List<AttachmentVO> contentImages = fileHandler.transferTempFile(tempFiles);
+		for (AttachmentVO contentImg: contentImages) {
+			contentImg.setArticleId(articleVO.getArticleId());
+			attachmentDAO.storeNewFile(contentImg);
+		}
+		articleVO.setArticleContent(articleImageParser.replaceImagePath(contentImages, articleVO.getArticleContent()));
+		
 		// 사용자가 첨부한 파일의 개수와 DB에 실제 저장된 파일의 개수 비교
 		int fileCnt = attachFiles.size();
 		int successCnt = 0;
 		for (MultipartFile file: attachFiles) {
-			StoredFile storedFile = fileHandler.storeFile(file);
+			StoredFile storedFile = fileHandler.storeFile(file, false);
 			if (storedFile == null) {
 				fileCnt = 0;
 				break;
@@ -90,6 +103,7 @@ public class ArticleServiceImpl implements ArticleService {
 	@Transactional
 	@Override
 	public boolean modifyArticle(ArticleVO articleVO, List<MultipartFile> attachFiles, List<String> deleteFiles) {
+		
 		// 사용자가 삭제 요청한 게시글 첨부파일 DB삭제 수행
 		int deleteFileCnt = 0;
 		int deleteCnt = 0;
@@ -97,7 +111,7 @@ public class ArticleServiceImpl implements ArticleService {
 			deleteFileCnt = deleteFiles.size();
 			for (String attachmentId: deleteFiles) {
 				AttachmentVO attachmentVO = attachmentDAO.getOneAttachment(attachmentId);
-				File originfile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
+				File originfile = fileHandler.getStoredFile(attachmentVO.getUuidFilename(), false);
 				if (originfile.exists() && originfile.isFile()) {
 					attachmentDAO.deleteAttachment(attachmentVO.getAttachmentId());
 					originfile.delete();
@@ -111,7 +125,7 @@ public class ArticleServiceImpl implements ArticleService {
 		int fileCnt = attachFiles.size();
 		int successCnt = 0;
 		for (MultipartFile file: attachFiles) {
-			StoredFile storedFile = fileHandler.storeFile(file);
+			StoredFile storedFile = fileHandler.storeFile(file, false);
 			if (storedFile == null) {
 				fileCnt = 0;
 				break;
@@ -141,7 +155,7 @@ public class ArticleServiceImpl implements ArticleService {
 		int deleteCnt = 0;
 		if (fileList.size() >0) {
 			for (AttachmentVO attachmentVO: fileList) {
-				File originfile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
+				File originfile = fileHandler.getStoredFile(attachmentVO.getUuidFilename(), false);
 				if (originfile.exists() && originfile.isFile()) {
 					attachmentDAO.deleteAttachment(attachmentVO.getAttachmentId());
 					originfile.delete();

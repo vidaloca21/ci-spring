@@ -20,6 +20,4 @@ public interface AttachmentService {
 	 */
 	public AttachmentVO getOneAttachment(String attachmentId);
 	
-	public boolean imageUploader();
-	
 }

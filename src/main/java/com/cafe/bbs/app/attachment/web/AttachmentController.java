@@ -2,6 +2,7 @@ package com.cafe.bbs.app.attachment.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
@@ -44,42 +45,43 @@ public class AttachmentController {
 	@GetMapping("/file/download/{attachmentId}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable String attachmentId) {
 		AttachmentVO attachmentVO = attachmentService.getOneAttachment(attachmentId);
-		File storedFile = fileHandler.getStoredFile(attachmentVO.getUuidFilename());
+		File storedFile = fileHandler.getStoredFile(attachmentVO.getUuidFilename(), false);
 		ResponseEntity<Resource> resource = fileHandler.getResponseEntity(storedFile, attachmentVO.getOriginFilename());
 		logger.info("fileDownload: " + resource.getStatusCode());
 		return resource;
 	}
 
-	@GetMapping("/file/{filename}")
-	public ResponseEntity<byte[]> getArticleImg(@PathVariable String filename) {
-		File storedFile = fileHandler.getStoredFile(filename);
-        if (storedFile == null) {
-            throw new IllegalArgumentException("파일이 존재하지 않습니다.");
-        }
-        try {
-            byte[] imageBytes = Files.readAllBytes(storedFile.toPath());
-            HttpHeaders header = new HttpHeaders();
-	        header.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=" + filename);
-	        
-            return new ResponseEntity<>(imageBytes, header, HttpStatus.OK);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("이미지를 불러올 수 없습니다.");
-        }
-	}
-	
 	@ResponseBody
 	@PostMapping("/api/image/upload")
 	public Map<String, Object> imageUploader(MultipartHttpServletRequest request) {
 		Map<String, Object> result = new HashMap<>();
 		List<MultipartFile> fileList = request.getFiles("upload");
 		for (MultipartFile file : fileList) {
-			if (file.getSize() > 0) {
-				StoredFile storedFile = fileHandler.storeFile(file);
+			if (file.getSize() > 0 && file.getContentType().startsWith("image")) {
+				StoredFile storedFile = fileHandler.storeFile(file, true);
 				result.put("uploaded", true);
 				result.put("filename", storedFile.getFileName());
-				result.put("url", "/file/" +storedFile.getRealFileName());
+				result.put("url", "/api/temp/" +storedFile.getRealFileName());
 			}
 		}
 		return result;
 	}
+	
+	@GetMapping("/api/{isTemp}/{filename}")
+	public ResponseEntity<byte[]> getTempImg(@PathVariable String isTemp, @PathVariable String filename) {
+		File storedFile = fileHandler.getStoredFile(filename, isTemp.equals("temp"));
+		if (storedFile == null) {
+			throw new IllegalArgumentException("파일이 존재하지 않습니다.");
+		}
+		try {
+			byte[] imageBytes = Files.readAllBytes(storedFile.toPath());
+			HttpHeaders header = new HttpHeaders();
+			header.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=" + URLEncoder.encode(filename, "UTF-8"));
+			
+			return new ResponseEntity<>(imageBytes, header, HttpStatus.OK);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("이미지를 불러올 수 없습니다.");
+		}
+	}
+	
 }

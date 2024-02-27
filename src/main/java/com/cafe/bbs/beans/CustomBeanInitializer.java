@@ -29,5 +29,10 @@ public class CustomBeanInitializer {
 	public SHA sha() {
 		return new SHA();
 	}
+	
+	@Bean
+	public ArticleImageParser articleImageParser() {
+		return new ArticleImageParser();
+	}
 
 }

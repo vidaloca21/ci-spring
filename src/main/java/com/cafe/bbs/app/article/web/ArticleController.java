@@ -151,15 +151,12 @@ public class ArticleController {
 	@GetMapping("/{boardUrl}/write")
 	public String createNewArticle(@PathVariable String boardUrl
 								 , @RequestParam(name = "upperArticleId", required = false) String upperArticleId
-							     , HttpServletRequest request
 								 , Model model) {
 		if (upperArticleId != "") {
 			ArticleVO upperArticleVO = articleService.getOneArticleByArticleId(upperArticleId, false);
 			model.addAttribute("upperArticleVO", upperArticleVO);
 		}
 		BoardVO boardVO = boardService.getBoardVO(boardUrl);
-		String nextUrl = (String)request.getHeader("REFERER");
-		model.addAttribute("nextUrl", nextUrl);
 		model.addAttribute("boardVO", boardVO);
 		model.addAttribute("articleVO", new ArticleVO());
 		return "articleWrite";
@@ -299,7 +296,7 @@ public class ArticleController {
 		if (isConfirmed) {
 			boolean isSuccess = articleService.deleteOneArticle(articleVO.getArticleId());
 			if (isSuccess) {
-				return "redirect:/" +boardUrl;
+				return "redirect:/" +boardUrl+"/list";
 			} else {
 				logger.info("RequestFailed");
 				throw new RequestFailedException("게시글 삭제에 실패하였습니다");
